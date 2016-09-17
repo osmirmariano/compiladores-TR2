@@ -1,18 +1,20 @@
 #include <iostream>
 #include "Posfixa.cpp"
-
+#include "Thompson.cpp"
 using namespace std;
 
 int main(){
     int op;
-    string expressao;
+    string expressao, posTho;
     Posfixa *pos = new Posfixa();
+    Thompson *tho = new Thompson();
     
     do{
         cout << "---------------------------------------------------" << endl;
         cout << "\t MENU DE OPÇÃO" << endl;
         cout << "---------------------------------------------------" << endl;
         cout << " 1 -- INSERIR EXPRESSÃO " << endl;
+        cout << " 2 -- VISUALIZAR O AUTÔMATO " << endl;
         cout << " 0 -- SAIR" << endl;
         cout << "---------------------------------------------------" << endl;
         cout << " OPÇÃO: ";
@@ -26,9 +28,15 @@ int main(){
                 cout << "---------------------------------------------------" << endl;
                 cout << " EXPRESSÃO: ";
                 cin >> expressao;
-                //pos->operadoresBinariosVerificacao(expressao);
-                pos->infixaParaPosfixa(expressao);
-                
+                pos->operadoresBinariosVerificacao(expressao);
+                posTho = pos->retorno();
+                //cout << "TESTE " <<  posTho << endl;
+                //tho->testandoExpressao(posTho); // Testando, depois remover
+                break;
+            case 2:
+                cout << "---------------------------------------------------" << endl;
+                cout << "\t VISUALIZAÇÃO DO AUTÔMATO" << endl;
+                cout << "---------------------------------------------------" << endl;
                 break;
             case 0:
                 cout << "\tAPLICAÇÃO ENCERRADA COM SUCESSO!" << endl << endl;
