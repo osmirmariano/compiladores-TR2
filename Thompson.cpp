@@ -1,6 +1,6 @@
 #include <iostream>
 #include <cstdlib>
-//#include "Posfixa.cpp"
+#include <stack>
 
 using namespace std;
 
@@ -9,14 +9,15 @@ typedef struct {
 	int qtEstados;
 }TRANSICOES;
 
-typedef struct {
+typedef struct no{
+	TRANSICOES **transicoes;
 	string alfabeto;
 	string *estados;
 	int qtEstados;
-	TRANSICOES **transicoes;
 	int estadoInicial;
 	int *estadosFinais;
 	int qtEstFinais;
+	struct no *prox;
 }AUTOMATO;
 
 class Thompson{
@@ -27,40 +28,75 @@ class Thompson{
 			AUTOMATO *Base(string simbolo);
 			AUTOMATO *Concatenacao(AUTOMATO *a, AUTOMATO *b);
 			AUTOMATO *Uniao(AUTOMATO *a, AUTOMATO *b);
+			void montadorAutomato(string posTho);
+			string uneAlfabetos(string a, string b);
+			void montadorAutomato(string posTho);
 			//void testandoExpressao(string posTho);
-
+			stack <AUTOMATO> pilha;
 		};
+
 		~Thompson();
 
-		AUTOMATO *uneAlfabetos(string a, string b){
+        string unirAlfabetos(string a, string b) {
+        	string alfabeto;
+            alfabeto = a;
 
+			for (int x = 0; x < b.size(); x++) {
+            	alfabeto.
+            }
+            return alfabeto;
 		};
 
+  //       TRANSICOES  *unirEstados(TRANSICOES *estado1, TRANSICOES *estado2){
+  //       	TRANSICOES estados;
+  //           for(int x = 0; x < estado1->length(); x++){
+  //           	empilharEstados(&topo, estado1[x]);
+  //           }
+  //           for(int x = 0; x < estado2->length(); x++){
+  //           	empilharEstados(&topo, estado2[x]);
+  //           }
+  //           return estados;
+		// };
+
+		// TRANSICOES *unirTransicoes(TRANSICOES *transicoes1, TRANSICOES *transicoes2){
+		// 	TRANSICOES transicoes;
+		// 	for(int x = 0; x < transicoes1.length(); x++){
+		// 		empilharTransicoes(&topo, transicoes1[x]);
+		// 	}
+		// 	for(int x = 0; x < transicoes2.length(); x++){
+		// 		empilharTransicoes(&topo, transicoes2[x]);
+		// 	}
+		// 	return transicoes;
+		// };
+
 		AUTOMATO *Base(string simbolo) {
-			AUTOMATO *base = new AUTOMATO;
-			base->alfabeto = simbolo;
+			AUTOMATO *base = new AUTOMATO; // Criando objeto automato
+			base->alfabeto = simbolo; // Alfabeto recebendo o simbolo
+			//Código abaixo para criar os estados
 			base->qtEstados = 2;
 			base->estados = new string[base->qtEstados];
 			base->estados[0] = '0';
 			base->estados[1] = '1';
-			base->transicoes = new transicoes*[2];
-			base->transicoes[0] = new transicoes[1];
+			base->estadoInicial = 0;//Correspondente ao estado inicial 
+			base->qtEstFinais = 1;//Definindo a quantidade de estados finais, só 1
+			base->estadosFinais = new int[1];//Criando objeto estados finais
+			base->estadosFinais[0] = 1; // Dizendo que é o estado final
+			//Código abaixo referente as transições do automato
+            base->transicoes = new TRANSICOES*[2];
+            base->transicoes[0] = new TRANSICOES[1];
 			base->transicoes[0][0].qtEstados = 1;
+
 			base->transicoes[0][0].estados = new int[1];
 			base->transicoes[0][0].estados[0] = 1;
-			base->transicoes[1] = new transicoes[1];
+			base->transicoes[1] = new TRANSICOES[1];
 			base->transicoes[1][0].qtEstados = 0;
-			base->estadoInicial = 0;
-			base->qtEstFinais = 1;
-			base->estadosFinais = new int[1];
-			base->estadosFinais[0] = 1;
 			return base;
 		};
 
 
 		AUTOMATO *Concatenacao(AUTOMATO *a, AUTOMATO *b) {
 			AUTOMATO *novo = new AUTOMATO;
-			novo->alfabeto = uneAlfabetos(a->alfabeto,b->alfabeto);
+			novo->alfabeto = unirAlfabetos(a->alfabeto, b->alfabeto);
 			novo->qtEstados = a->qtEstados+b->qtEstados;
 			novo->estados = new string[novo->qtEstados];
 			//Preencher os estados do novo autômatos com os estados de a e b
@@ -74,7 +110,7 @@ class Thompson{
 
 		AUTOMATO *Uniao(AUTOMATO *a, AUTOMATO *b) {
 			AUTOMATO *novo = new AUTOMATO;
-			novo->alfabeto = uneAlfabetos(a->alfabeto,b->alfabeto);
+			novo->alfabeto = unirAlfabetos(a->alfabeto,b->alfabeto);
 			novo->qtEstados = a->qtEstados+b->qtEstados+2;
 			novo->estados = new string[novo->qtEstados];
 			//Preencher os estados do novo autômatos com os estados de a e b
@@ -89,7 +125,7 @@ class Thompson{
 
 		AUTOMATO *FechoDeKleene(AUTOMATO *a) {
 			AUTOMATO *novo = new AUTOMATO;
-			novo->alfabeto = uneAlfabetos(a->alfabeto,"");
+            novo->alfabeto = unirAlfabetos(a->alfabeto,"");
 			novo->qtEstados = a->qtEstados+2;
 			novo->estados = new string[novo->qtEstados];
 			//Preencher os estados do novo autômatos com os estados de a
@@ -101,24 +137,26 @@ class Thompson{
 			return novo;
 		};
 
-		// void montadorAutomato(string posTho){
-
-		// 	for(int x = 0; x < posTho.length(); x++){
-		// 		simbolo = posTho[x];
-		// 		if(simbolo != "+" && simbolo != "." && simbolo != "*"){
-		// 			&Base(simbolo);//Chamando a base para gerar da expressão regular que tá nos simbolo o automato
-		// 		}
-		// 		else if(simbolo == "+"){
-		// 			&Concatenacao(a, b);//Chamando concatenação, falta tratar ainda tá incompleta
-		// 		}
-		// 		else if(simbolo == "."){
-		// 			&Uniao(a, b);//Chamando concatenação, falta tratar ainda tá incompleta
-		// 		}
-		// 		else if(simbolo == "*"){
-		// 			&FechoDeKleene(a);//Chamando concatenação, falta tratar ainda tá incompleta
-		// 		}
-		// 	}
-		// };
+		void montadorAutomato(string posTho){
+			stack <AUTOMATO> pilha;
+			for(int x = 0; x < posTho.length(); x++){
+				simbolo = posTho[x];
+				if(simbolo != "+" && simbolo != "." && simbolo != "*"){
+					Base(simbolo);//Chamando a base para gerar da expressão regular que tá nos simbolo o automato
+				}
+				else if(simbolo == "+"){
+					// a = posTho[x-2];
+					// b = posTho[x-1];
+					// &Concatenacao(a, b);//Chamando concatenação, falta tratar ainda tá incompleta
+				}
+				else if(simbolo == "."){
+					//&Uniao(a, b);//Chamando concatenação, falta tratar ainda tá incompleta
+				}
+				else if(simbolo == "*"){
+					//&FechoDeKleene(a);//Chamando concatenação, falta tratar ainda tá incompleta
+				}
+			}
+		};
 
 		/*void verifcaAutomato(){
 			while

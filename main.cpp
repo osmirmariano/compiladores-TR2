@@ -14,7 +14,7 @@ int main(){
         cout << "\t MENU DE OPÇÃO" << endl;
         cout << "---------------------------------------------------" << endl;
         cout << " 1 -- INSERIR EXPRESSÃO " << endl;
-        cout << " 2 -- VISUALIZAR O AUTÔMATO " << endl;
+        cout << " 2 -- VISUALIZAR O AUTÔMATO DETERMINÍSTICO-& " << endl;
         cout << " 0 -- SAIR" << endl;
         cout << "---------------------------------------------------" << endl;
         cout << " OPÇÃO: ";
@@ -30,12 +30,13 @@ int main(){
                 cin >> expressao;
                 pos->operadoresBinariosVerificacao(expressao);
                 posTho = pos->retorno();
+                posTho->montadorAutomato(posTho);
                 //cout << "TESTE " <<  posTho << endl;
                 //tho->testandoExpressao(posTho); // Testando, depois remover
                 break;
             case 2:
                 cout << "---------------------------------------------------" << endl;
-                cout << "\t VISUALIZAÇÃO DO AUTÔMATO" << endl;
+                cout << "\t VISUALIZAÇÃO DO AUTÔMATO D. COM M. VAZIO" << endl;
                 cout << "---------------------------------------------------" << endl;
                 break;
             case 0:
