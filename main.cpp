@@ -29,8 +29,8 @@ int main(){
                 cout << " EXPRESSÃO: ";
                 cin >> expressao;
                 pos->operadoresBinariosVerificacao(expressao);
-                posTho = pos->retorno();
-                posTho->montadorAutomato(posTho);
+                // posTho = pos->retorno();
+                // tho->montadorAutomato(posTho);
                 //cout << "TESTE " <<  posTho << endl;
                 //tho->testandoExpressao(posTho); // Testando, depois remover
                 break;
@@ -38,6 +38,8 @@ int main(){
                 cout << "---------------------------------------------------" << endl;
                 cout << "\t VISUALIZAÇÃO DO AUTÔMATO D. COM M. VAZIO" << endl;
                 cout << "---------------------------------------------------" << endl;
+                posTho = pos->retorno();
+                tho->montadorAutomato(posTho);
                 break;
             case 0:
                 cout << "\tAPLICAÇÃO ENCERRADA COM SUCESSO!" << endl << endl;

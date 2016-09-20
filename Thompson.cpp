@@ -30,38 +30,36 @@ class Thompson{
 			AUTOMATO *Uniao(AUTOMATO *a, AUTOMATO *b);
 			void montadorAutomato(string posTho);
 			string uneAlfabetos(string a, string b);
-			void montadorAutomato(string posTho);
-			//void testandoExpressao(string posTho);
+			void montadorAutomato(string posTho); 
 			stack <AUTOMATO> pilha;
 		};
 
 		~Thompson();
 
-        string unirAlfabetos(string a, string b) {
+        string unirAlfabetos(string alfabeto1, string alfabeto2) {
         	string alfabeto;
-            alfabeto = a;
-
-			for (int x = 0; x < b.size(); x++) {
-            	alfabeto.
+            alfabeto = alfabeto1;
+			for (int x = 0; x < alfabeto2.size(); x++) {
+            	alfabeto.push(alfabeto2[x]);
             }
-            return alfabeto;
-		};
+			return alfabeto;
+        };
 
-  //       TRANSICOES  *unirEstados(TRANSICOES *estado1, TRANSICOES *estado2){
-  //       	TRANSICOES estados;
-  //           for(int x = 0; x < estado1->length(); x++){
-  //           	empilharEstados(&topo, estado1[x]);
-  //           }
-  //           for(int x = 0; x < estado2->length(); x++){
-  //           	empilharEstados(&topo, estado2[x]);
-  //           }
-  //           return estados;
-		// };
+   //          AUTOMATO  *unirEstados(AUTOMATO *estado1, AUTOMATO *estado2){
+   //          	AUTOMATO *estados;
+   //              for(int x = 0; x < estado1->length(); x++){
+   //              	estados->estados->push_back(estado1[x]);
+   //              }
+   //              for(int x = 0; x < estado2->length(); x++){
+   //              	estados->estados->push_back(estado2[x]);
+   //              }
+   //              return estados;
+			// };
 
 		// TRANSICOES *unirTransicoes(TRANSICOES *transicoes1, TRANSICOES *transicoes2){
 		// 	TRANSICOES transicoes;
 		// 	for(int x = 0; x < transicoes1.length(); x++){
-		// 		empilharTransicoes(&topo, transicoes1[x]);
+  //                           transicoes.empilharTransicoes(&topo, transicoes1[x]);
 		// 	}
 		// 	for(int x = 0; x < transicoes2.length(); x++){
 		// 		empilharTransicoes(&topo, transicoes2[x]);
@@ -85,11 +83,17 @@ class Thompson{
             base->transicoes = new TRANSICOES*[2];
             base->transicoes[0] = new TRANSICOES[1];
 			base->transicoes[0][0].qtEstados = 1;
-
 			base->transicoes[0][0].estados = new int[1];
 			base->transicoes[0][0].estados[0] = 1;
 			base->transicoes[1] = new TRANSICOES[1];
 			base->transicoes[1][0].qtEstados = 0;
+
+			//Para testes
+            cout << "SIMBOLO: " << base->alfabeto << endl;
+            cout << "Q. ESTADOS: " << base->qtEstados << endl;
+            cout << "ESTADO INICIAL: " << base->estadoInicial << endl;
+			cout << "ESTADO FINAL: " << base->estadosFinais[0] << endl;
+			cout << "TRANSICAO: " << base->transicoes[0][0].estados[0] << endl << endl;
 			return base;
 		};
 
@@ -139,21 +143,32 @@ class Thompson{
 
 		void montadorAutomato(string posTho){
 			stack <AUTOMATO> pilha;
+			AUTOMATO *recebe1, *recebe2;
 			for(int x = 0; x < posTho.length(); x++){
 				simbolo = posTho[x];
 				if(simbolo != "+" && simbolo != "." && simbolo != "*"){
 					Base(simbolo);//Chamando a base para gerar da expressão regular que tá nos simbolo o automato
+					//Aqui empilha a Base
+                    pilha.push(Base(simbolo));
+					cout << "Montou a Base" << endl;
 				}
 				else if(simbolo == "+"){
-					// a = posTho[x-2];
-					// b = posTho[x-1];
-					// &Concatenacao(a, b);//Chamando concatenação, falta tratar ainda tá incompleta
+					/*Primeiro Desempilha o primeiro que foi inserido
+					Segundo Desempilha o segundo que foi desempilhado
+					E passa ambos para concatenação (No lugar de A e B)*/
+					//Concatenacao(a, b);//Chamando concatenação, falta tratar ainda tá incompleta
+					cout << "Entrou aqui Concatenacao" << endl;
 				}
 				else if(simbolo == "."){
-					//&Uniao(a, b);//Chamando concatenação, falta tratar ainda tá incompleta
+					/*Primeiro Desempilha o primeiro que foi inserido
+					Segundo Desempilha o segundo que foi desempilhado
+					E passa ambos para concatenação (No lugar de A e B)*/
+					//Uniao(a, b);//Chamando concatenação, falta tratar ainda tá incompleta
 				}
 				else if(simbolo == "*"){
-					//&FechoDeKleene(a);//Chamando concatenação, falta tratar ainda tá incompleta
+					/*Desempilha somente o que tá no topo, visto que * é um operador binário e
+					passa para a função no lugar do A*/
+					//FechoDeKleene(a);//Chamando concatenação, falta tratar ainda tá incompleta
 				}
 			}
 		};
@@ -184,7 +199,7 @@ class Thompson{
 			}
 			afd= pop(pilha);
 			se (se a pilha estiver vazia)
-			 imprimir(afd);*/
+			imprimir(afd);*/
 
 
 };
