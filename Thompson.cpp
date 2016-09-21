@@ -139,11 +139,20 @@ class Thompson{
             else{
                 aux = topo;
                 while(aux != NULL){
+                    cout << "-----------------------------------------------" << endl;
                     cout << " ALFABETO: " << aux->automato->alfabeto << endl;
-                    cout << " E. INCIAL: " << aux->automato->estadoInicial << endl;
-                    cout << " ESTADOS: " << aux->automato->estados << endl;
-                    cout << " Q. ESTADOS: " << aux->automato->qtEstados << endl;
-                    cout << " Q. ESTADOS FINAIS: " << aux->automato->qtEstFinais<< endl;
+                    cout << " ESTADO INCIAL: " << aux->automato->estadoInicial << endl;
+                    cout << " CONJUNTO DE ESTADOS: ";
+                    for(int x = 0; x < aux->automato->qtEstados+2; x++){
+                        cout << " " << aux->automato->estados[x];
+                    }
+                    cout << endl << " ESTADO FINAL: ";
+                    for(int x = 0; x < aux->automato->qtEstFinais; x++){
+                        cout << " " << aux->automato->estadosFinais[x];
+                    }
+                    cout << endl << " QUANTIDADE ESTADOS: " << aux->automato->qtEstados+2 << endl;
+                    cout << " QUANTIDADE ESTADOS FINAIS: " << aux->automato->qtEstFinais<< endl;
+                    cout << "-----------------------------------------------" << endl << endl;
                     aux = aux->prox;
                 }
            }
@@ -186,39 +195,78 @@ class Thompson{
             }
             cout << endl << " QUANTIDADE ESTADOS: " << base->qtEstados << endl;
             cout << " QUANTIDADE ESTADOS FINAIS: " << base->qtEstFinais<< endl;
-            cout << "-----------------------------------------------" << endl << endl;
+
+            for(int x = 0; x < base->qtEstados-1; x++){
+                for(int y = 0; y < base->alfabeto.size(); y++){
+                    cout << " ENTRANDO: '" << base->alfabeto << "' NO ESTADO: '" << base->estados[x] << "' VAI PARA O ESTADO: ";
+                    cout << " '" << base->transicoes[x][y].estados[x] << "'";
+                }
+            }
+            cout << endl << "-----------------------------------------------" << endl << endl;
             return base;
         };
 
-        AUTOMATO *unirEstados(AUTOMATO estados1, AUTOMATO estados2){
-            AUTOMATO *estados;
-            for(int x = 0; x < 6; x++){
-                cout << "Itens 1: " << estados->estados[x] << endl;
+        AUTOMATO *unirEstados(AUTOMATO *estados1, AUTOMATO *estados2){
+            AUTOMATO *estadosNovos/* = new AUTOMATO*/;
+            //estadosNovos->estados = new string[estados1->qtEstados+estados2->qtEstados+1];
+
+            cout << " ESTADOS DO AUTOMATO 1: ";
+            for(int x = 0; x < estados1->qtEstados; x++){
+                cout << " " << estados1->estados[x];
             }
+            cout << endl;
+
+            cout << " ESTADOS DO AUTOMATO 2: ";
+            for(int x = 0; x < estados2->qtEstados; x++){
+                cout << " " << estados2->estados[x];
+            }
+            cout << endl;
+
+            /*cout << "ESTADOS 2: " << estados1->qtEstados+estados2->qtEstados << endl;
+            for(int x = 0; x < estados1->qtEstados; x++){
+                estadosNovos->estados[x] = estados1->estados[x];
+                cout << " " << x+1 << " ESTADOS: " << estadosNovos->estados[x] << endl;
+            }
+            for(int y = 0; y < estados2->qtEstados; y++){
+                estadosNovos->estados[estados1->qtEstados+y+1] = estados2->estados[y];
+                cout << " " << estados1->qtEstados+y+1 << " ESTADOS: " << estadosNovos->estados[estados1->qtEstados+y+1] << endl;
+            }
+            //Erro
+            for(int x = 0; x < estados1->qtEstados+estados2->qtEstados; x++){
+                cout << " ESTADOS: " << estadosNovos->estados[x] << endl;
+            }
+            return estadosNovos;*/
         };
 
         AUTOMATO *Concatenacao(AUTOMATO *a, AUTOMATO *b) {
             stringstream conversao;
+
             AUTOMATO *novo = new AUTOMATO;
             novo->alfabeto = unirAlfabetos(a->alfabeto, b->alfabeto);
             novo->qtEstados = a->qtEstados+b->qtEstados;
-            novo->estados = new string[novo->qtEstados+2];
+            novo->estados = new string[novo->qtEstados];
 
-            //Preencher os estados do novo autômatos com os estados de a e b
-            //Preencher as transições do novo autômatos com as transições de a e b
+            unirEstados(a, b);
+            //novo->estados = unirEstados(a, b);
+
             novo->estadoInicial = 0;
             novo->estadosFinais = new int[1];
             novo->estadosFinais[0] = novo->qtEstados+1;//Estado final
             novo->qtEstFinais = 1;
-
             //Unindo estados
             for(int x = 0; x < novo->qtEstados+2; x++){
-                int y = x;
-                conversao << y;
+                conversao << x;
                 novo->estados[x] = conversao.str();
                 conversao.str("");
             }
-
+            //Preencher as transições do novo autômatos com as transições de a e b
+            novo->transicoes = new TRANSICOES*[2];
+            novo->transicoes[0] = new TRANSICOES[1];
+            novo->transicoes[0][0].qtEstados = 1;
+            novo->transicoes[0][0].estados = new int[1];
+            novo->transicoes[0][0].estados[0] = 1;
+            novo->transicoes[1] = new TRANSICOES[1];
+            novo->transicoes[1][0].qtEstados = 0;
             //Só para testes, depois remover
             cout << "-----------------------------------------------" << endl;
             cout << " ALFABETO: " << novo->alfabeto << endl;
@@ -231,7 +279,7 @@ class Thompson{
             for(int x = 0; x < novo->qtEstFinais; x++){
                 cout << " " << novo->estadosFinais[x];
             }
-            cout << endl << " QUANTIDADE ESTADOS: " << novo->qtEstados << endl;
+            cout << endl << " QUANTIDADE ESTADOS: " << novo->qtEstados+2 << endl;
             cout << " QUANTIDADE ESTADOS FINAIS: " << novo->qtEstFinais<< endl;
             cout << "-----------------------------------------------" << endl << endl;
 
@@ -301,6 +349,7 @@ class Thompson{
                 }
                 else if(simbolo == "+" || simbolo == "."){
                     recebe2 = topo->automato;
+                    //novo->estados = unirEstados(a->estados, b->estados);
                     desempilhar(&topo);
                     if(topo != NULL){
                         recebe1 = topo->automato;
@@ -308,6 +357,7 @@ class Thompson{
                         if(simbolo == "+"){
                             empilhar(&topo, Concatenacao(recebe1, recebe2));//Chamando concatenação, falta tratar ainda tá incompleta
                             cout << "Entrou aqui Concatenação" << endl;
+                            listar(topo);
                         }
                         else if(simbolo == "."){
                             empilhar(&topo, Uniao(recebe1, recebe2));
