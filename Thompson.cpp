@@ -1,6 +1,6 @@
 #include <iostream>
 #include <cstdlib>
-#include <stack>
+//#include <stack>
 #include <sstream>
 
 using namespace std;
@@ -36,33 +36,61 @@ class Thompson{
     		void montadorAutomato(string posTho);
     		string uneAlfabetos(string a, string b);
     		void montadorAutomato(string posTho);
-            string unirEstados(string estados1, string estados2);
-    		//stack <AUTOMATO> pilha;
+            string *unirEstados(AUTOMATO *estados1, AUTOMATO *estados2);
+            string *renomearEstados(AUTOMATO *nome);
     	};
 
-    	~Thompson();
+        ~Thompson();
+        /*----------------------- FUNÇÃO PARA RENOMEAR ESTADOS------------------------------*/
+        string *renomearEstados(AUTOMATO *nome){
+            stringstream conversao;
+            string *nomeNovo;
+            for(int x = 0; x < nome->qtEstados; x++){
+                conversao << x;
+                nome->estados[x] = conversao.str();
+                conversao.str("");
+            }
+            nomeNovo = nome->estados;
+            return nomeNovo;
+        };
 
-    	string unirAlfabetos(string alfabeto1, string alfabeto2) {
-    		string alfabeto;
-    		alfabeto = alfabeto1;
-    		for (int x = 0; x < alfabeto2.size(); x++) {
-    			alfabeto += alfabeto2[x];
-    		}
-    		return alfabeto;
-    	};
+        /*----------------------- FUNÇÃO PARA UNIR ALFABETOS--------------------------------*/
+        string unirAlfabetos(string alfabeto1, string alfabeto2) {
+            string alfabeto;
+            alfabeto = alfabeto1;
+            for (int x = 0; x < alfabeto2.size(); x++) {
+                alfabeto += alfabeto2[x];
+            }
+            return alfabeto;
+        };
 
-        // TRANSICOES *unirTransicoes(TRANSICOES *transicoes1, TRANSICOES *transicoes2){
-        //     TRANSICOES *transicoes;
-        //     PILHAAUTOMATO *topo = NULL;
-        //     for(int x = 0; x < transicoes1.size(); x++){
-        //         empilharTransicoes(&topo, &transicoes1[x]);
-        //     }
+        /*----------------------- FUNÇÃO PARA UNIR ESTADOS---------------------------------*/
+        string *unirEstados(AUTOMATO *estados1, AUTOMATO *estados2){
+            AUTOMATO *estadosNovos = new AUTOMATO;
+            string *estadosE, *estadosNomeados;
+            estadosNovos->estados = new string[estados1->qtEstados+estados2->qtEstados+2];
+            estadosNovos->qtEstados = estados1->qtEstados+estados2->qtEstados+2;
+            for(int x = 0; x < estados1->qtEstados; x++){
+                estadosNovos->estados[x] = estados1->estados[x];
+            }
 
-        //     for(int x = 0; x < transicoes2.size(); x++){
-        //         empilharTransicoes(&topo, &transicoes2[x]);
-        //     }
-        //     return transicoes;
-        // };
+            for(int y = 0; y < estados2->qtEstados; y++){
+                estadosNovos->estados[estados1->qtEstados+y] = estados2->estados[y];
+            }
+            //Criando mais dois
+            estadosNovos->estados[estadosNovos->qtEstados-1] = "1";
+            estadosNovos->estados[estadosNovos->qtEstados-2] = "1";
+            estadosE = estadosNovos->estados;
+            //Renomeando Estados
+            estadosNomeados = renomearEstados(estadosNovos);
+            return estadosNomeados;
+        };
+
+        /*----------------------- FUNÇÃO PARA UNIR TRANSIÇÕES------------------------------*/
+        TRANSICOES *unirTransicoes(TRANSICOES *transicoes1, TRANSICOES *transicoes2){
+            
+            //return transicoes;
+        };
 
         /*----------------------- FUNÇÃO EMPILHAR-----------------------------*/
         // void empilharTransicoes(PILHAAUTOMATO **topo, TRANSICOES *recebe){
@@ -90,22 +118,7 @@ class Thompson{
         //     }
         // };
 
-        // string unirEstados(string estados1, string estados2){
-        //     string estados, armazena;
-        //     PILHAAUTOMATO *topo = NULL;
-        //     for(int x = 0; x < estados1.length(); x++){
-        //         armazena = estados1[x];
-        //         empilharEstados(&topo, armazena);
-        //     }
-
-        //     for(int x = 0; x < estados2.length(); x++){
-        //         armazena = estados2[x];
-        //         empilharEstados(&topo, estados2[x]);
-        //     }
-        //     return estados;
-        // };
-
-
+        
     	/*----------------------- FUNÇÃO EMPILHAR-----------------------------*/
         void empilhar(PILHAAUTOMATO **topo, AUTOMATO *recebe){
             PILHAAUTOMATO *novo;
@@ -152,6 +165,12 @@ class Thompson{
                     }
                     cout << endl << " QUANTIDADE ESTADOS: " << aux->automato->qtEstados+2 << endl;
                     cout << " QUANTIDADE ESTADOS FINAIS: " << aux->automato->qtEstFinais<< endl;
+                    for(int x = 0; x < aux->automato->qtEstados-1; x++){
+                        for(int y = 0; y < aux->automato->alfabeto.size(); y++){
+                            cout << " ENTRANDO: '" << aux->automato->alfabeto << "' NO ESTADO: '" << aux->automato->estados[x] << "' VAI PARA O ESTADO: ";
+                            cout << " '" << aux->automato->transicoes[x][y].estados[x] << "'";
+                        }
+                    }
                     cout << "-----------------------------------------------" << endl << endl;
                     aux = aux->prox;
                 }
@@ -206,82 +225,46 @@ class Thompson{
             return base;
         };
 
-        AUTOMATO *unirEstados(AUTOMATO *estados1, AUTOMATO *estados2){
-            AUTOMATO *estadosNovos/* = new AUTOMATO*/;
-            //estadosNovos->estados = new string[estados1->qtEstados+estados2->qtEstados+1];
 
-            cout << " ESTADOS DO AUTOMATO 1: ";
-            for(int x = 0; x < estados1->qtEstados; x++){
-                cout << " " << estados1->estados[x];
-            }
-            cout << endl;
 
-            cout << " ESTADOS DO AUTOMATO 2: ";
-            for(int x = 0; x < estados2->qtEstados; x++){
-                cout << " " << estados2->estados[x];
-            }
-            cout << endl;
-
-            /*cout << "ESTADOS 2: " << estados1->qtEstados+estados2->qtEstados << endl;
-            for(int x = 0; x < estados1->qtEstados; x++){
-                estadosNovos->estados[x] = estados1->estados[x];
-                cout << " " << x+1 << " ESTADOS: " << estadosNovos->estados[x] << endl;
-            }
-            for(int y = 0; y < estados2->qtEstados; y++){
-                estadosNovos->estados[estados1->qtEstados+y+1] = estados2->estados[y];
-                cout << " " << estados1->qtEstados+y+1 << " ESTADOS: " << estadosNovos->estados[estados1->qtEstados+y+1] << endl;
-            }
-            //Erro
-            for(int x = 0; x < estados1->qtEstados+estados2->qtEstados; x++){
-                cout << " ESTADOS: " << estadosNovos->estados[x] << endl;
-            }
-            return estadosNovos;*/
-        };
 
         AUTOMATO *Concatenacao(AUTOMATO *a, AUTOMATO *b) {
-            stringstream conversao;
-
             AUTOMATO *novo = new AUTOMATO;
             novo->alfabeto = unirAlfabetos(a->alfabeto, b->alfabeto);
-            novo->qtEstados = a->qtEstados+b->qtEstados;
+            novo->qtEstados = a->qtEstados+b->qtEstados+2;
             novo->estados = new string[novo->qtEstados];
-
-            unirEstados(a, b);
-            //novo->estados = unirEstados(a, b);
+            //Unir Estados
+            novo->estados = unirEstados(a, b);
 
             novo->estadoInicial = 0;
             novo->estadosFinais = new int[1];
-            novo->estadosFinais[0] = novo->qtEstados+1;//Estado final
+            novo->estadosFinais[0] = novo->qtEstados-1;//Estado final
             novo->qtEstFinais = 1;
             //Unindo estados
-            for(int x = 0; x < novo->qtEstados+2; x++){
-                conversao << x;
-                novo->estados[x] = conversao.str();
-                conversao.str("");
-            }
+
             //Preencher as transições do novo autômatos com as transições de a e b
-            novo->transicoes = new TRANSICOES*[2];
-            novo->transicoes[0] = new TRANSICOES[1];
-            novo->transicoes[0][0].qtEstados = 1;
-            novo->transicoes[0][0].estados = new int[1];
-            novo->transicoes[0][0].estados[0] = 1;
-            novo->transicoes[1] = new TRANSICOES[1];
-            novo->transicoes[1][0].qtEstados = 0;
             //Só para testes, depois remover
             cout << "-----------------------------------------------" << endl;
             cout << " ALFABETO: " << novo->alfabeto << endl;
-            cout << " ESTADO INCIAL: " << novo->estadoInicial << endl;
+            cout << " ESTADO INICIAL: " << novo->estadoInicial << endl;
             cout << " CONJUNTO DE ESTADOS: ";
-            for(int x = 0; x < novo->qtEstados+2; x++){
+            for(int x = 0; x < novo->qtEstados; x++){
                 cout << " " << novo->estados[x];
             }
-            cout << endl << " ESTADO FINAL: ";
+            cout << endl << " ESTADO FINAIS: ";
             for(int x = 0; x < novo->qtEstFinais; x++){
                 cout << " " << novo->estadosFinais[x];
             }
-            cout << endl << " QUANTIDADE ESTADOS: " << novo->qtEstados+2 << endl;
+            cout << endl << " QUANTIDADE ESTADOS: " << novo->qtEstados << endl;
             cout << " QUANTIDADE ESTADOS FINAIS: " << novo->qtEstFinais<< endl;
-            cout << "-----------------------------------------------" << endl << endl;
+
+            // for(int x = 0; x < novo->qtEstados-1; x++){
+            //     for(int y = 0; y < novo->alfabeto.size(); y++){
+            //         cout << " ENTRANDO: '" << novo->alfabeto << "' NO ESTADO: '" << novo->estados[x] << "' VAI PARA O ESTADO: ";
+            //         cout << " '" << novo->transicoes[x][y].estados[x] << "'";
+            //     }
+            // }
+            cout << endl << "-----------------------------------------------" << endl << endl;
 
             return novo;
         };
@@ -289,7 +272,7 @@ class Thompson{
         AUTOMATO *Uniao(AUTOMATO *a, AUTOMATO *b) {
             AUTOMATO *novo = new AUTOMATO;
             novo->alfabeto = unirAlfabetos(a->alfabeto,b->alfabeto);
-            novo->qtEstados = a->qtEstados+b->qtEstados+2;
+            novo->qtEstados = a->qtEstados+b->qtEstados;
             novo->estados = new string[novo->qtEstados];
             //Preencher os estados do novo autômatos com os estados de a e b
 
@@ -334,6 +317,7 @@ class Thompson{
             	if(simbolo != "+" && simbolo != "." && simbolo != "*"){
                     //Chamando a base para gerar a expressão regular que tá nos simbolo o automato
                     empilhar(&topo, Base(simbolo));
+                    //listar(topo);
                     cout << "Montou a Base" << endl << endl;
                     //listar(topo);
                 }
@@ -357,7 +341,7 @@ class Thompson{
                         if(simbolo == "+"){
                             empilhar(&topo, Concatenacao(recebe1, recebe2));//Chamando concatenação, falta tratar ainda tá incompleta
                             cout << "Entrou aqui Concatenação" << endl;
-                            listar(topo);
+                            //listar(topo);
                         }
                         else if(simbolo == "."){
                             empilhar(&topo, Uniao(recebe1, recebe2));
