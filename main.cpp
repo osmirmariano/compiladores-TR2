@@ -1,4 +1,5 @@
 #include <iostream>
+#include <stack>
 #include "Posfixa.cpp"
 #include "Thompson.cpp"
 using namespace std;
