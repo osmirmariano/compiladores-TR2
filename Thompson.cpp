@@ -88,38 +88,10 @@ class Thompson{
 
         /*----------------------- FUNÇÃO PARA UNIR TRANSIÇÕES------------------------------*/
         TRANSICOES *unirTransicoes(TRANSICOES *transicoes1, TRANSICOES *transicoes2){
-            
             //return transicoes;
         };
 
-        /*----------------------- FUNÇÃO EMPILHAR-----------------------------*/
-        // void empilharTransicoes(PILHAAUTOMATO **topo, TRANSICOES *recebe){
-        //     PILHAAUTOMATO *novo;
-        //     novo = new PILHAAUTOMATO;
-        //     if(novo == NULL)
-        //         cout << "NÃO ALOCADO" << endl;
-        //     else{
-        //         novo->automato->transicoes = recebe;
-        //         novo->prox = (*topo);
-        //         (*topo) = novo;
-        //     }
-        // };
-
-        /*----------------------- FUNÇÃO EMPILHAR-----------------------------*/
-        // void empilharEstados(PILHAAUTOMATO **topo, string recebe){
-        //     PILHAAUTOMATO *novo;
-        //     novo = new PILHAAUTOMATO;
-        //     if(novo == NULL)
-        //         cout << "NÃO ALOCADO" << endl;
-        //     else{
-        //         novo->automato->estados = recebe;
-        //         novo->prox = (*topo);
-        //         (*topo) = novo;
-        //     }
-        // };
-
-        
-    	/*----------------------- FUNÇÃO EMPILHAR-----------------------------*/
+    	/*------------------------- FUNÇÃO EMPILHAR AUTOMATO-------------------------------*/
         void empilhar(PILHAAUTOMATO **topo, AUTOMATO *recebe){
             PILHAAUTOMATO *novo;
             novo = new PILHAAUTOMATO;
@@ -132,7 +104,7 @@ class Thompson{
             }
         };
 
-        /*----------------------- FUNÇÃO DESEMPILHAR-----------------------------*/
+        /*------------------------- FUNÇÃO DESEMPILHAR AUTOMATO-----------------------------*/
         void desempilhar(PILHAAUTOMATO **topo){
             PILHAAUTOMATO *aux;
             if(aux == NULL)
@@ -144,7 +116,7 @@ class Thompson{
             }
         };
 
-
+        /*---------------------------- FUNÇÃO LISTAR AUTOMATO-------------------------------*/
         void listar(PILHAAUTOMATO *topo){
             PILHAAUTOMATO *aux;
             if(topo == NULL)
@@ -177,7 +149,7 @@ class Thompson{
            }
         };
 
-        /*----------------------- FUNÇÃO BASE - CONCLUÍDA-----------------------------*/
+        /*----------------------- FUNÇÃO BASE - CONCLUÍDA-------------------------------*/
     	AUTOMATO *Base(string simbolo) {
             AUTOMATO *base = new AUTOMATO; // Criando objeto automato
             base->alfabeto = simbolo; // Alfabeto recebendo o simbolo
@@ -199,7 +171,6 @@ class Thompson{
             base->transicoes[1] = new TRANSICOES[1];
             base->transicoes[1][0].qtEstados = 0;
 
-            //string *todosEstados;
             //Só para testes, depois remover
             cout << "-----------------------------------------------" << endl;
             cout << " ALFABETO: " << base->alfabeto << endl;
@@ -226,8 +197,7 @@ class Thompson{
         };
 
 
-
-
+        /*----------------------- FUNÇÃO CONCATENAÇÃO---------------------------------*/
         AUTOMATO *Concatenacao(AUTOMATO *a, AUTOMATO *b) {
             AUTOMATO *novo = new AUTOMATO;
             novo->alfabeto = unirAlfabetos(a->alfabeto, b->alfabeto);
@@ -235,14 +205,27 @@ class Thompson{
             novo->estados = new string[novo->qtEstados];
             //Unir Estados
             novo->estados = unirEstados(a, b);
-
             novo->estadoInicial = 0;
             novo->estadosFinais = new int[1];
             novo->estadosFinais[0] = novo->qtEstados-1;//Estado final
             novo->qtEstFinais = 1;
-            //Unindo estados
+            //Unir Transições
 
+            novo->transicoes = new TRANSICOES*[novo->qtEstados];
+
+            novo->transicoes[0] = new TRANSICOES[1];
+            novo->transicoes[0][0].qtEstados = 1;
+            novo->transicoes[0][0].estados = new int[1];
+            novo->transicoes[0][0].estados[0] = 1;
+            novo->transicoes[1] = new TRANSICOES[1];
+            novo->transicoes[1][0].qtEstados = 0;
             //Preencher as transições do novo autômatos com as transições de a e b
+
+            cout << " ENTRANDO: '" << novo->alfabeto[0] << "' NO ESTADO: '" << novo->estados[0] << "' VAI PARA O ESTADO: ";
+            cout << " '" << novo->transicoes[0][0].estados[0] << "'" << endl;
+
+
+
             //Só para testes, depois remover
             cout << "-----------------------------------------------" << endl;
             cout << " ALFABETO: " << novo->alfabeto << endl;
@@ -272,15 +255,30 @@ class Thompson{
         AUTOMATO *Uniao(AUTOMATO *a, AUTOMATO *b) {
             AUTOMATO *novo = new AUTOMATO;
             novo->alfabeto = unirAlfabetos(a->alfabeto,b->alfabeto);
-            novo->qtEstados = a->qtEstados+b->qtEstados;
+            novo->qtEstados = a->qtEstados+b->qtEstados+2;
             novo->estados = new string[novo->qtEstados];
             //Preencher os estados do novo autômatos com os estados de a e b
-
+            //novo->estados = unirEstados(a, b);
             //Preencher as transições do novo autômatos com as transições de a e b
             novo->estadoInicial = 0;
             novo->estadosFinais = new int[1];
             novo->estadosFinais[0] = novo->qtEstados-1;
             novo->qtEstFinais = 1;
+
+            cout << "-----------------------------------------------" << endl;
+            cout << " ALFABETO: " << novo->alfabeto << endl;
+            cout << " ESTADO INICIAL: " << novo->estadoInicial << endl;
+            cout << " CONJUNTO DE ESTADOS: ";
+            for(int x = 0; x < novo->qtEstados; x++){
+                cout << " " << novo->estados[x];
+            }
+            cout << endl << " ESTADO FINAIS: ";
+            for(int x = 0; x < novo->qtEstFinais; x++){
+                cout << " " << novo->estadosFinais[x];
+            }
+            cout << endl << " QUANTIDADE ESTADOS: " << novo->qtEstados << endl;
+            cout << " QUANTIDADE ESTADOS FINAIS: " << novo->qtEstFinais<< endl;
+
             return novo;
         };
 
@@ -307,7 +305,6 @@ class Thompson{
         };
 
         void montadorAutomato(string posTho){
-           //stack <AUTOMATO> pilha;
            PILHAAUTOMATO *topo = NULL;
 
             AUTOMATO *recebe1, *recebe2, *automato;
