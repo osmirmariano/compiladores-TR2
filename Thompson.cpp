@@ -67,7 +67,7 @@ class Thompson{
         /*----------------------- FUNÇÃO PARA UNIR ESTADOS---------------------------------*/
         string *unirEstados(AUTOMATO *estados1, AUTOMATO *estados2){
             AUTOMATO *estadosNovos = new AUTOMATO;
-            string *estadosE, *estadosNomeados;
+            string *estadosE;
             estadosNovos->estados = new string[estados1->qtEstados+estados2->qtEstados+2];
             estadosNovos->qtEstados = estados1->qtEstados+estados2->qtEstados+2;
             for(int x = 0; x < estados1->qtEstados; x++){
@@ -77,13 +77,21 @@ class Thompson{
             for(int y = 0; y < estados2->qtEstados; y++){
                 estadosNovos->estados[estados1->qtEstados+y] = estados2->estados[y];
             }
-            //Criando mais dois
-            estadosNovos->estados[estadosNovos->qtEstados-1] = "1";
-            estadosNovos->estados[estadosNovos->qtEstados-2] = "1";
             estadosE = estadosNovos->estados;
-            //Renomeando Estados
-            estadosNomeados = renomearEstados(estadosNovos);
-            return estadosNomeados;
+            return estadosE;
+        };
+
+        /*----------------------- FUNÇÃO PARA UNIR ESTADOS---------------------------------*/
+        string *unirEstadosFecho(AUTOMATO *estados1){
+            AUTOMATO *estadosNovos = new AUTOMATO;
+            string *estadosE;
+            estadosNovos->estados = new string[estados1->qtEstados+2];
+            estadosNovos->qtEstados = estados1->qtEstados+2;
+            for(int x = 0; x < estados1->qtEstados; x++){
+                estadosNovos->estados[x] = estados1->estados[x];
+            }
+            estadosE = estadosNovos->estados;
+            return estadosE;
         };
 
         /*----------------------- FUNÇÃO PARA UNIR TRANSIÇÕES------------------------------*/
@@ -205,6 +213,11 @@ class Thompson{
             novo->estados = new string[novo->qtEstados];
             //Unir Estados
             novo->estados = unirEstados(a, b);
+            //Criando mais dois novos estados 
+            novo->estados[novo->qtEstados-1] = "1";
+            novo->estados[novo->qtEstados-2] = "1";
+            //Renomeando Estados
+            novo->estados = renomearEstados(novo);
             novo->estadoInicial = 0;
             novo->estadosFinais = new int[1];
             novo->estadosFinais[0] = novo->qtEstados-1;//Estado final
@@ -255,10 +268,11 @@ class Thompson{
         AUTOMATO *Uniao(AUTOMATO *a, AUTOMATO *b) {
             AUTOMATO *novo = new AUTOMATO;
             novo->alfabeto = unirAlfabetos(a->alfabeto,b->alfabeto);
-            novo->qtEstados = a->qtEstados+b->qtEstados+2;
+            novo->qtEstados = a->qtEstados+b->qtEstados;
             novo->estados = new string[novo->qtEstados];
             //Preencher os estados do novo autômatos com os estados de a e b
-            //novo->estados = unirEstados(a, b);
+            novo->estados = unirEstados(a, b);
+            novo->estados = renomearEstados(novo);
             //Preencher as transições do novo autômatos com as transições de a e b
             novo->estadoInicial = 0;
             novo->estadosFinais = new int[1];
@@ -289,18 +303,44 @@ class Thompson{
             novo->qtEstados = a->qtEstados+2;
             novo->estados = new string[novo->qtEstados];
             //Preencher os estados do novo autômatos com os estados de a
+            //Unir Estados
+            novo->estados = unirEstadosFecho(a);
+            //Criando mais dois novos estados 
+            novo->estados[novo->qtEstados-1] = "1";
+            novo->estados[novo->qtEstados-2] = "1";
+            //Renomeando Estados
+            novo->estados = renomearEstados(novo);
+
             //Preencher as transições do novo autômatos com as transições de a
             novo->estadoInicial = 0;
             novo->estadosFinais = new int[1];
             novo->estadosFinais[0] = novo->qtEstados-1;
             novo->qtEstFinais = 1;
+            
+
+            //Só para testes, depois remover
             cout << "-----------------------------------------------" << endl;
             cout << " ALFABETO: " << novo->alfabeto << endl;
-            cout << " E. INCIAL: " << novo->estadoInicial << endl;
-            cout << " Q. ESTADOS: " << novo->qtEstados << endl;
-            cout << " Q. ESTADOS FINAIS: " << novo->qtEstFinais<< endl;
-            //cout << " ALFABETO UNIDO: " << unirAlfabetos(a->alfabeto,"") << endl ;
-            cout << "-----------------------------------------------" << endl << endl;
+            cout << " ESTADO INICIAL: " << novo->estadoInicial << endl;
+            cout << " CONJUNTO DE ESTADOS: ";
+            for(int x = 0; x < novo->qtEstados; x++){
+                cout << " " << novo->estados[x];
+            }
+            cout << endl << " ESTADO FINAIS: ";
+            for(int x = 0; x < novo->qtEstFinais; x++){
+                cout << " " << novo->estadosFinais[x];
+            }
+            cout << endl << " QUANTIDADE ESTADOS: " << novo->qtEstados << endl;
+            cout << " QUANTIDADE ESTADOS FINAIS: " << novo->qtEstFinais<< endl;
+
+            // for(int x = 0; x < novo->qtEstados-1; x++){
+            //     for(int y = 0; y < novo->alfabeto.size(); y++){
+            //         cout << " ENTRANDO: '" << novo->alfabeto << "' NO ESTADO: '" << novo->estados[x] << "' VAI PARA O ESTADO: ";
+            //         cout << " '" << novo->transicoes[x][y].estados[x] << "'";
+            //     }
+            // }
+            cout << endl << "-----------------------------------------------" << endl << endl;
+
             return novo;
         };
 
