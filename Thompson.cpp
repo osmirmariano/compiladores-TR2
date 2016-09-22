@@ -29,6 +29,7 @@ class Thompson{
     public:
     	string posTho, simbolo;
     public:
+        //CONSTRUTOR
     	Thompson(){
     		AUTOMATO *Base(string simbolo);
     		AUTOMATO *Concatenacao(AUTOMATO *a, AUTOMATO *b);
@@ -38,9 +39,11 @@ class Thompson{
     		void montadorAutomato(string posTho);
             string *unirEstados(AUTOMATO *estados1, AUTOMATO *estados2);
             string *renomearEstados(AUTOMATO *nome);
+            string *unirEstadosFecho(AUTOMATO *estados1);
     	};
 
         ~Thompson();
+
         /*----------------------- FUNÇÃO PARA RENOMEAR ESTADOS------------------------------*/
         string *renomearEstados(AUTOMATO *nome){
             stringstream conversao;
@@ -95,9 +98,25 @@ class Thompson{
         };
 
         /*----------------------- FUNÇÃO PARA UNIR TRANSIÇÕES------------------------------*/
-        TRANSICOES *unirTransicoes(TRANSICOES *transicoes1, TRANSICOES *transicoes2){
-            //return transicoes;
-        };
+        // TRANSICOES *unirTransicoes(AUTOMATO *transicoes1){
+        //     TRANSICOES *transicao;
+        //     base->transicoes = new TRANSICOES*[2];
+        //     base->transicoes[0] = new TRANSICOES[1];
+        //     base->transicoes[0][0].qtEstados = 1;
+        //     base->transicoes[0][0].estados = new int[1];
+        //     base->transicoes[0][0].estados[0] = 1;
+        //     base->transicoes[1] = new TRANSICOES[1];
+        //     base->transicoes[1][0].qtEstados = 0;
+
+        //     for(int x = 0; x < transicoes1->qtEstados; x++){
+        //         for(int y = 0; y < transicoes1->alfabeto.size(); y++){
+
+        //         }
+        //     }
+        // };
+
+
+
 
     	/*------------------------- FUNÇÃO EMPILHAR AUTOMATO-------------------------------*/
         void empilhar(PILHAAUTOMATO **topo, AUTOMATO *recebe){
@@ -157,6 +176,28 @@ class Thompson{
            }
         };
 
+        //INÍCIOS DE FUNÇÕES DE TESTES E IMPLEMENTAÇÃO DA ORIGINAL
+        void insercaoTransicoes(string estadoTransicao, string simbolo, AUTOMATO *transicao){
+            cout << "TAMANHO:  " << transicao->qtEstados << endl;
+            //cout << "ESTADO RECEBIDO: " << estadoTransicao << endl;
+            //cout << "SIMBOLO RECEBIDO: " << simbolo << endl;
+            cout << " NO ESTADO < " << estadoTransicao << " > ENTRA < " << simbolo << " > VAI PARA: " << transicao->estados[1];
+            cout << endl;
+            //for(int x = 0; x )
+        };
+
+        void insercaoTransicoes(string estadoTransicao, string simbolo, AUTOMATO *transicao){
+            cout << "TAMANHO:  " << transicao->qtEstados << endl;
+            //cout << "ESTADO RECEBIDO: " << estadoTransicao << endl;
+            //cout << "SIMBOLO RECEBIDO: " << simbolo << endl;
+            cout << " NO ESTADO < " << estadoTransicao << " > ENTRA < " << simbolo << " > VAI PARA: " << transicao->estados[1];
+            cout << endl;
+            //for(int x = 0; x )
+        };
+
+        //FINAL DE FUNÇÕES DE TESTES
+
+
         /*----------------------- FUNÇÃO BASE - CONCLUÍDA-------------------------------*/
     	AUTOMATO *Base(string simbolo) {
             AUTOMATO *base = new AUTOMATO; // Criando objeto automato
@@ -171,13 +212,18 @@ class Thompson{
             base->estadosFinais = new int[1];//Criando objeto estados finais
             base->estadosFinais[0] = 1; // Dizendo que é o estado final
             //Código abaixo referente as transições do automato
-            base->transicoes = new TRANSICOES*[2];
-            base->transicoes[0] = new TRANSICOES[1];
-            base->transicoes[0][0].qtEstados = 1;
-            base->transicoes[0][0].estados = new int[1];
-            base->transicoes[0][0].estados[0] = 1;
-            base->transicoes[1] = new TRANSICOES[1];
-            base->transicoes[1][0].qtEstados = 0;
+            string estadoTransicao;
+            estadoTransicao = base->estados[0];
+
+            insercaoTransicoes(estadoTransicao, simbolo, base);
+
+            // base->transicoes = new TRANSICOES*[2];
+            // base->transicoes[0] = new TRANSICOES[1];
+            // base->transicoes[0][0].qtEstados = 1;
+            // base->transicoes[0][0].estados = new int[1];
+            // base->transicoes[0][0].estados[0] = 1;
+            // base->transicoes[1] = new TRANSICOES[1];
+            // base->transicoes[1][0].qtEstados = 0;
 
             //Só para testes, depois remover
             cout << "-----------------------------------------------" << endl;
@@ -194,12 +240,12 @@ class Thompson{
             cout << endl << " QUANTIDADE ESTADOS: " << base->qtEstados << endl;
             cout << " QUANTIDADE ESTADOS FINAIS: " << base->qtEstFinais<< endl;
 
-            for(int x = 0; x < base->qtEstados-1; x++){
+            /*for(int x = 0; x < base->qtEstados-1; x++){
                 for(int y = 0; y < base->alfabeto.size(); y++){
                     cout << " ENTRANDO: '" << base->alfabeto << "' NO ESTADO: '" << base->estados[x] << "' VAI PARA O ESTADO: ";
                     cout << " '" << base->transicoes[x][y].estados[x] << "'";
                 }
-            }
+            }*/
             cout << endl << "-----------------------------------------------" << endl << endl;
             return base;
         };
@@ -213,7 +259,7 @@ class Thompson{
             novo->estados = new string[novo->qtEstados];
             //Unir Estados
             novo->estados = unirEstados(a, b);
-            //Criando mais dois novos estados 
+            //Criando mais dois novos estados
             novo->estados[novo->qtEstados-1] = "1";
             novo->estados[novo->qtEstados-2] = "1";
             //Renomeando Estados
@@ -305,7 +351,7 @@ class Thompson{
             //Preencher os estados do novo autômatos com os estados de a
             //Unir Estados
             novo->estados = unirEstadosFecho(a);
-            //Criando mais dois novos estados 
+            //Criando mais dois novos estados
             novo->estados[novo->qtEstados-1] = "1";
             novo->estados[novo->qtEstados-2] = "1";
             //Renomeando Estados
@@ -316,7 +362,7 @@ class Thompson{
             novo->estadosFinais = new int[1];
             novo->estadosFinais[0] = novo->qtEstados-1;
             novo->qtEstFinais = 1;
-            
+
 
             //Só para testes, depois remover
             cout << "-----------------------------------------------" << endl;
