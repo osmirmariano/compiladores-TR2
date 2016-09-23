@@ -1,3 +1,6 @@
+#ifndef AUTOMATO_H
+#define AUTOMATO_H
+
 #include <iostream>
 #include <string>
 #include <vector>
@@ -142,3 +145,5 @@ class Automato {
 			return alfabeto.size();
 		};
 };
+
+#endif // AUTOMATO_H

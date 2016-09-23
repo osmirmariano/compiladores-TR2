@@ -1,3 +1,6 @@
+#ifndef TRANSICAO_H
+#define TRANSICAO_H
+
 #include <string>
 #include <vector>
 
@@ -44,3 +47,4 @@ class Transicao{
 			return simbolo;
 		}
 };
+#endif // TRANSICAO_H
