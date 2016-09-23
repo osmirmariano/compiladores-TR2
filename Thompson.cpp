@@ -1,438 +1,353 @@
 #include <iostream>
-#include <cstdlib>
-//#include <stack>
-#include <sstream>
+#include <string>
+#include <vector>
+#include <stack>
+#include "Automato.cpp"
+#include "Transicao.cpp"
 
 using namespace std;
 
-typedef struct {
-	int *estados;
-	int qtEstados;
-}TRANSICOES;
+class Thompson {
+	public:
+		string posTho;
+	public:
+		Thompson(){
+			Automato constroiAutomato(string);
+			bool temVazio(string);
+			string moveVazio(string);
+			bool operando(string);
+			bool operando(char);
+			bool operadorUnario(string);
+			bool operadorBinario(string);
+			bool operadorConcatenacao(string);
+			bool operadorUniao(string);
 
-typedef struct{
-	TRANSICOES **transicoes;
-	string alfabeto;
-    string *estados;
-    int qtEstados;
-    int estadoInicial;
-    int *estadosFinais;
-    int qtEstFinais;
-}AUTOMATO;
+			Automato base(char);
+			Automato concatenacao(Automato, Automato);
+			Automato uniao(Automato, Automato);
+			Automato fechoDeKleene(Automato);
 
-typedef struct PILHAAUTOMATO{
-	AUTOMATO *automato;
-    struct PILHAAUTOMATO *prox;
-}PILHAAUTOMATO;
+			char retiraAspas(string);
 
-class Thompson{
-    public:
-    	string posTho, simbolo;
-    public:
-        //CONSTRUTOR
-    	Thompson(){
-    		AUTOMATO *Base(string simbolo);
-    		AUTOMATO *Concatenacao(AUTOMATO *a, AUTOMATO *b);
-    		AUTOMATO *Uniao(AUTOMATO *a, AUTOMATO *b);
-    		void montadorAutomato(string posTho);
-    		string uneAlfabetos(string a, string b);
-    		void montadorAutomato(string posTho);
-            string *unirEstados(AUTOMATO *estados1, AUTOMATO *estados2);
-            string *renomearEstados(AUTOMATO *nome);
-            string *unirEstadosFecho(AUTOMATO *estados1);
-    	};
+			vector<Transicao> uneTransicoes(vector<Transicao>, vector<Transicao>);
+			vector<string> uneEstados(vector<string>, vector<string>);
+			string uneAlfabetos(string, string);
+			bool contemLetra(string, char);
 
-        ~Thompson();
-
-        /*----------------------- FUNÇÃO PARA RENOMEAR ESTADOS------------------------------*/
-        string *renomearEstados(AUTOMATO *nome){
-            stringstream conversao;
-            string *nomeNovo;
-            for(int x = 0; x < nome->qtEstados; x++){
-                conversao << x;
-                nome->estados[x] = conversao.str();
-                conversao.str("");
-            }
-            nomeNovo = nome->estados;
-            return nomeNovo;
-        };
-
-        /*----------------------- FUNÇÃO PARA UNIR ALFABETOS--------------------------------*/
-        string unirAlfabetos(string alfabeto1, string alfabeto2) {
-            string alfabeto;
-            alfabeto = alfabeto1;
-            for (int x = 0; x < alfabeto2.size(); x++) {
-                alfabeto += alfabeto2[x];
-            }
-            return alfabeto;
-        };
-
-        /*----------------------- FUNÇÃO PARA UNIR ESTADOS---------------------------------*/
-        string *unirEstados(AUTOMATO *estados1, AUTOMATO *estados2){
-            AUTOMATO *estadosNovos = new AUTOMATO;
-            string *estadosE;
-            estadosNovos->estados = new string[estados1->qtEstados+estados2->qtEstados+2];
-            estadosNovos->qtEstados = estados1->qtEstados+estados2->qtEstados+2;
-            for(int x = 0; x < estados1->qtEstados; x++){
-                estadosNovos->estados[x] = estados1->estados[x];
-            }
-
-            for(int y = 0; y < estados2->qtEstados; y++){
-                estadosNovos->estados[estados1->qtEstados+y] = estados2->estados[y];
-            }
-            estadosE = estadosNovos->estados;
-            return estadosE;
-        };
-
-        /*----------------------- FUNÇÃO PARA UNIR ESTADOS---------------------------------*/
-        string *unirEstadosFecho(AUTOMATO *estados1){
-            AUTOMATO *estadosNovos = new AUTOMATO;
-            string *estadosE;
-            estadosNovos->estados = new string[estados1->qtEstados+2];
-            estadosNovos->qtEstados = estados1->qtEstados+2;
-            for(int x = 0; x < estados1->qtEstados; x++){
-                estadosNovos->estados[x] = estados1->estados[x];
-            }
-            estadosE = estadosNovos->estados;
-            return estadosE;
-        };
-
-        /*----------------------- FUNÇÃO PARA UNIR TRANSIÇÕES------------------------------*/
-        // TRANSICOES *unirTransicoes(AUTOMATO *transicoes1){
-        //     TRANSICOES *transicao;
-        //     base->transicoes = new TRANSICOES*[2];
-        //     base->transicoes[0] = new TRANSICOES[1];
-        //     base->transicoes[0][0].qtEstados = 1;
-        //     base->transicoes[0][0].estados = new int[1];
-        //     base->transicoes[0][0].estados[0] = 1;
-        //     base->transicoes[1] = new TRANSICOES[1];
-        //     base->transicoes[1][0].qtEstados = 0;
-
-        //     for(int x = 0; x < transicoes1->qtEstados; x++){
-        //         for(int y = 0; y < transicoes1->alfabeto.size(); y++){
-
-        //         }
-        //     }
-        // };
+			Automato renomeiaConcatenacaoB(Automato, string);
+			Automato renomeiaUniaoA(Automato);
+			Automato renomeiaUniaoB(Automato);
+			Automato renomeiaUniao(Automato);
+			Automato renomeiaFechoA(Automato);
+			Automato renomeiaFecho(Automato);
+		};
 
 
+		Automato montadorAutomato(string posTho) {
+			stack<Automato> pilha;
 
+			Automato automato, op1, op2;
+			string simbolo;
 
-    	/*------------------------- FUNÇÃO EMPILHAR AUTOMATO-------------------------------*/
-        void empilhar(PILHAAUTOMATO **topo, AUTOMATO *recebe){
-            PILHAAUTOMATO *novo;
-            novo = new PILHAAUTOMATO;
-            if(novo == NULL)
-                cout << "NÃO ALOCADO" << endl;
-            else{
-                novo->automato = recebe;
-                novo->prox = (*topo);
-                (*topo) = novo;
-            }
-        };
+			for (int i = 0; i < posTho.size(); i++) {
+				simbolo = posTho[i];
 
-        /*------------------------- FUNÇÃO DESEMPILHAR AUTOMATO-----------------------------*/
-        void desempilhar(PILHAAUTOMATO **topo){
-            PILHAAUTOMATO *aux;
-            if(aux == NULL)
-                cout << "NÃO EXISTE NENHUM ELEMENTO NA PILHA" << endl;
-            else{
-                aux = (*topo);
-                (*topo) = (*topo)->prox;
-                delete aux;
-            }
-        };
+				if (operando(simbolo))
+					pilha.push(base(retiraAspas(simbolo)));
+				else if (operadorUnario(simbolo)) {
+					op1 = pilha.top();
+					pilha.pop();
+					pilha.push(fechoDeKleene(op1));
+				} else if (operadorBinario(simbolo)) {
+					op2 = pilha.top();
+					pilha.pop();
+					if (!pilha.empty()) {
+						op1 = pilha.top();
+						pilha.pop();
+						if (operadorConcatenacao(simbolo))
+							pilha.push(concatenacao(op1, op2));
+						else if (operadorUniao(simbolo))
+							pilha.push(uniao(op1, op2));
+					}
+				}
+			}
 
-        /*---------------------------- FUNÇÃO LISTAR AUTOMATO-------------------------------*/
-        void listar(PILHAAUTOMATO *topo){
-            PILHAAUTOMATO *aux;
-            if(topo == NULL)
-                cout << "PILHA VAZIA" << endl;
-            else{
-                aux = topo;
-                while(aux != NULL){
-                    cout << "-----------------------------------------------" << endl;
-                    cout << " ALFABETO: " << aux->automato->alfabeto << endl;
-                    cout << " ESTADO INCIAL: " << aux->automato->estadoInicial << endl;
-                    cout << " CONJUNTO DE ESTADOS: ";
-                    for(int x = 0; x < aux->automato->qtEstados+2; x++){
-                        cout << " " << aux->automato->estados[x];
-                    }
-                    cout << endl << " ESTADO FINAL: ";
-                    for(int x = 0; x < aux->automato->qtEstFinais; x++){
-                        cout << " " << aux->automato->estadosFinais[x];
-                    }
-                    cout << endl << " QUANTIDADE ESTADOS: " << aux->automato->qtEstados+2 << endl;
-                    cout << " QUANTIDADE ESTADOS FINAIS: " << aux->automato->qtEstFinais<< endl;
-                    for(int x = 0; x < aux->automato->qtEstados-1; x++){
-                        for(int y = 0; y < aux->automato->alfabeto.size(); y++){
-                            cout << " ENTRANDO: '" << aux->automato->alfabeto << "' NO ESTADO: '" << aux->automato->estados[x] << "' VAI PARA O ESTADO: ";
-                            cout << " '" << aux->automato->transicoes[x][y].estados[x] << "'";
-                        }
-                    }
-                    cout << "-----------------------------------------------" << endl << endl;
-                    aux = aux->prox;
-                }
-           }
-        };
+			automato = pilha.top();
+			pilha.pop();
 
-        //INÍCIOS DE FUNÇÕES DE TESTES E IMPLEMENTAÇÃO DA ORIGINAL
-        void insercaoTransicoes(string estadoTransicao, string simbolo, AUTOMATO *transicao){
-            cout << "TAMANHO:  " << transicao->qtEstados << endl;
-            //cout << "ESTADO RECEBIDO: " << estadoTransicao << endl;
-            //cout << "SIMBOLO RECEBIDO: " << simbolo << endl;
-            cout << " NO ESTADO < " << estadoTransicao << " > ENTRA < " << simbolo << " > VAI PARA: " << transicao->estados[1];
-            cout << endl;
-            //for(int x = 0; x )
-        };
+			if (temVazio(posTho))
+				automato.setAlfabeto(moveVazio(automato.getAlfabeto()));
+			else
+				automato.setAlfabeto(automato.getAlfabeto() + "&");
 
-        void insercaoTransicoes(string estadoTransicao, string simbolo, AUTOMATO *transicao){
-            cout << "TAMANHO:  " << transicao->qtEstados << endl;
-            //cout << "ESTADO RECEBIDO: " << estadoTransicao << endl;
-            //cout << "SIMBOLO RECEBIDO: " << simbolo << endl;
-            cout << " NO ESTADO < " << estadoTransicao << " > ENTRA < " << simbolo << " > VAI PARA: " << transicao->estados[1];
-            cout << endl;
-            //for(int x = 0; x )
-        };
+			if (pilha.empty())
+				return automato;
+		}
 
-        //FINAL DE FUNÇÕES DE TESTES
+		bool temVazio(string posTho) {
+			for (int i = 0; i < posTho.size(); i++)
+				if (posTho[i] == '&')
+					return true;
+			return false;
+		}
 
+		string moveVazio(string alfabeto) {
+			string aux = "";
+			for (int i = 0; i < alfabeto.size(); i++)
+				if (alfabeto[i] != '&')
+					aux.push_back(alfabeto[i]);
+			aux.push_back('&');
+			return aux;
+		}
 
-        /*----------------------- FUNÇÃO BASE - CONCLUÍDA-------------------------------*/
-    	AUTOMATO *Base(string simbolo) {
-            AUTOMATO *base = new AUTOMATO; // Criando objeto automato
-            base->alfabeto = simbolo; // Alfabeto recebendo o simbolo
-            //Código abaixo para criar os estados
-            base->qtEstados = 2;
-            base->estados = new string[base->qtEstados];
-            base->estados[0] = "0";
-            base->estados[1] = "1";
-            base->estadoInicial = 0;//Correspondente ao estado inicial
-            base->qtEstFinais = 1;//Definindo a quantidade de estados finais, só 1
-            base->estadosFinais = new int[1];//Criando objeto estados finais
-            base->estadosFinais[0] = 1; // Dizendo que é o estado final
-            //Código abaixo referente as transições do automato
-            string estadoTransicao;
-            estadoTransicao = base->estados[0];
+		bool operando(string simbolo) {
+			for (int i = 0; i < simbolo.size(); i++) {
+				if (operadorUnario(simbolo) || operadorBinario(simbolo))
+					return false;
+			}
+			return true;
+		}
 
-            insercaoTransicoes(estadoTransicao, simbolo, base);
+		bool operando(char simbolo) {
+			string simb;
+			simb = simbolo;
+			if (operadorUnario(simb) || operadorBinario(simb))
+				return false;
+			return true;
+		}
 
-            // base->transicoes = new TRANSICOES*[2];
-            // base->transicoes[0] = new TRANSICOES[1];
-            // base->transicoes[0][0].qtEstados = 1;
-            // base->transicoes[0][0].estados = new int[1];
-            // base->transicoes[0][0].estados[0] = 1;
-            // base->transicoes[1] = new TRANSICOES[1];
-            // base->transicoes[1][0].qtEstados = 0;
+		bool operadorUnario(string simbolo) {
+			if (simbolo == "*")
+				return true;
+			return false;
+		}
 
-            //Só para testes, depois remover
-            cout << "-----------------------------------------------" << endl;
-            cout << " ALFABETO: " << base->alfabeto << endl;
-            cout << " ESTADO INICIAL: " << base->estadoInicial << endl;
-            cout << " CONJUNTO DE ESTADOS: ";
-            for(int x = 0; x < base->qtEstados; x++){
-                cout << " " << base->estados[x];
-            }
-            cout << endl << " ESTADO FINAIS: ";
-            for(int x = 0; x < base->qtEstFinais; x++){
-                cout << " " << base->estadosFinais[x];
-            }
-            cout << endl << " QUANTIDADE ESTADOS: " << base->qtEstados << endl;
-            cout << " QUANTIDADE ESTADOS FINAIS: " << base->qtEstFinais<< endl;
+		bool operadorBinario(string simbolo) {
+			if (simbolo == "+" || simbolo == ".")
+				return true;
+			return false;
+		}
 
-            /*for(int x = 0; x < base->qtEstados-1; x++){
-                for(int y = 0; y < base->alfabeto.size(); y++){
-                    cout << " ENTRANDO: '" << base->alfabeto << "' NO ESTADO: '" << base->estados[x] << "' VAI PARA O ESTADO: ";
-                    cout << " '" << base->transicoes[x][y].estados[x] << "'";
-                }
-            }*/
-            cout << endl << "-----------------------------------------------" << endl << endl;
-            return base;
-        };
+		bool operadorConcatenacao(string simbolo) {
+			if (simbolo == ".")
+				return true;
+			return false;
+		}
 
+		bool operadorUniao(string simbolo) {
+			if (simbolo == "+")
+				return true;
+			return false;
+		}
 
-        /*----------------------- FUNÇÃO CONCATENAÇÃO---------------------------------*/
-        AUTOMATO *Concatenacao(AUTOMATO *a, AUTOMATO *b) {
-            AUTOMATO *novo = new AUTOMATO;
-            novo->alfabeto = unirAlfabetos(a->alfabeto, b->alfabeto);
-            novo->qtEstados = a->qtEstados+b->qtEstados+2;
-            novo->estados = new string[novo->qtEstados];
-            //Unir Estados
-            novo->estados = unirEstados(a, b);
-            //Criando mais dois novos estados
-            novo->estados[novo->qtEstados-1] = "1";
-            novo->estados[novo->qtEstados-2] = "1";
-            //Renomeando Estados
-            novo->estados = renomearEstados(novo);
-            novo->estadoInicial = 0;
-            novo->estadosFinais = new int[1];
-            novo->estadosFinais[0] = novo->qtEstados-1;//Estado final
-            novo->qtEstFinais = 1;
-            //Unir Transições
+		Automato base(char simbolo) {
+			Automato automato;
+			automato.setAlfabeto(simbolo);
+			automato.setEstado("q0");
+			automato.setEstado("q1");
+			automato.setTransicao("q0", "q1", simbolo);
+			automato.setEstadoInicial("q0");
+			automato.setEstadoFinal("q1");
 
-            novo->transicoes = new TRANSICOES*[novo->qtEstados];
+			return automato;
+		}
 
-            novo->transicoes[0] = new TRANSICOES[1];
-            novo->transicoes[0][0].qtEstados = 1;
-            novo->transicoes[0][0].estados = new int[1];
-            novo->transicoes[0][0].estados[0] = 1;
-            novo->transicoes[1] = new TRANSICOES[1];
-            novo->transicoes[1][0].qtEstados = 0;
-            //Preencher as transições do novo autômatos com as transições de a e b
+		Automato concatenacao(Automato a, Automato b) {
+			Automato automato;
 
-            cout << " ENTRANDO: '" << novo->alfabeto[0] << "' NO ESTADO: '" << novo->estados[0] << "' VAI PARA O ESTADO: ";
-            cout << " '" << novo->transicoes[0][0].estados[0] << "'" << endl;
+			b = renomeiaConcatenacaoB(b, a.getEstadoFinal());
 
+			automato.setAlfabeto(uneAlfabetos(a.getAlfabeto(), b.getAlfabeto()));
+			automato.setEstados(uneEstados(a.getEstados(), b.getEstados()));
+			automato.setTransicoes(uneTransicoes(a.getTransicoes(), b.getTransicoes()));
+			automato.setEstadoInicial("q0");
+			automato.setEstadoFinal(b.getEstadoFinal());
 
+			automato.setTransicao(a.getEstadoFinal(), b.getEstadoInicial(), '&');
 
-            //Só para testes, depois remover
-            cout << "-----------------------------------------------" << endl;
-            cout << " ALFABETO: " << novo->alfabeto << endl;
-            cout << " ESTADO INICIAL: " << novo->estadoInicial << endl;
-            cout << " CONJUNTO DE ESTADOS: ";
-            for(int x = 0; x < novo->qtEstados; x++){
-                cout << " " << novo->estados[x];
-            }
-            cout << endl << " ESTADO FINAIS: ";
-            for(int x = 0; x < novo->qtEstFinais; x++){
-                cout << " " << novo->estadosFinais[x];
-            }
-            cout << endl << " QUANTIDADE ESTADOS: " << novo->qtEstados << endl;
-            cout << " QUANTIDADE ESTADOS FINAIS: " << novo->qtEstFinais<< endl;
+			return automato;
+		}
 
-            // for(int x = 0; x < novo->qtEstados-1; x++){
-            //     for(int y = 0; y < novo->alfabeto.size(); y++){
-            //         cout << " ENTRANDO: '" << novo->alfabeto << "' NO ESTADO: '" << novo->estados[x] << "' VAI PARA O ESTADO: ";
-            //         cout << " '" << novo->transicoes[x][y].estados[x] << "'";
-            //     }
-            // }
-            cout << endl << "-----------------------------------------------" << endl << endl;
+		Automato uniao(Automato a, Automato b) {
+			Automato automato;
 
-            return novo;
-        };
+			a = renomeiaUniaoA(a);
+			b = renomeiaUniaoB(b);
 
-        AUTOMATO *Uniao(AUTOMATO *a, AUTOMATO *b) {
-            AUTOMATO *novo = new AUTOMATO;
-            novo->alfabeto = unirAlfabetos(a->alfabeto,b->alfabeto);
-            novo->qtEstados = a->qtEstados+b->qtEstados;
-            novo->estados = new string[novo->qtEstados];
-            //Preencher os estados do novo autômatos com os estados de a e b
-            novo->estados = unirEstados(a, b);
-            novo->estados = renomearEstados(novo);
-            //Preencher as transições do novo autômatos com as transições de a e b
-            novo->estadoInicial = 0;
-            novo->estadosFinais = new int[1];
-            novo->estadosFinais[0] = novo->qtEstados-1;
-            novo->qtEstFinais = 1;
+			automato.setEstado("inicial");
+			automato.setTransicao("inicial", a.getEstadoInicial(), '&');
+			automato.setTransicao("inicial", b.getEstadoInicial(), '&');
 
-            cout << "-----------------------------------------------" << endl;
-            cout << " ALFABETO: " << novo->alfabeto << endl;
-            cout << " ESTADO INICIAL: " << novo->estadoInicial << endl;
-            cout << " CONJUNTO DE ESTADOS: ";
-            for(int x = 0; x < novo->qtEstados; x++){
-                cout << " " << novo->estados[x];
-            }
-            cout << endl << " ESTADO FINAIS: ";
-            for(int x = 0; x < novo->qtEstFinais; x++){
-                cout << " " << novo->estadosFinais[x];
-            }
-            cout << endl << " QUANTIDADE ESTADOS: " << novo->qtEstados << endl;
-            cout << " QUANTIDADE ESTADOS FINAIS: " << novo->qtEstFinais<< endl;
+			automato.adicionaEstados(uneEstados(a.getEstados(), b.getEstados()));
+			automato.adicionaTransicoes(uneTransicoes(a.getTransicoes(), b.getTransicoes()));
 
-            return novo;
-        };
+			automato.setEstado("final");
+			automato.setTransicao(a.getEstadoFinal(), "final", '&');
+			automato.setTransicao(b.getEstadoFinal(), "final", '&');
 
+			automato.setAlfabeto(uneAlfabetos(a.getAlfabeto(), b.getAlfabeto()));
+			automato.setEstadoInicial("inicial");
+			automato.setEstadoFinal("final");
 
-        AUTOMATO *FechoDeKleene(AUTOMATO *a) {
-            AUTOMATO *novo = new AUTOMATO;
-            novo->alfabeto = unirAlfabetos(a->alfabeto,"");
-            novo->qtEstados = a->qtEstados+2;
-            novo->estados = new string[novo->qtEstados];
-            //Preencher os estados do novo autômatos com os estados de a
-            //Unir Estados
-            novo->estados = unirEstadosFecho(a);
-            //Criando mais dois novos estados
-            novo->estados[novo->qtEstados-1] = "1";
-            novo->estados[novo->qtEstados-2] = "1";
-            //Renomeando Estados
-            novo->estados = renomearEstados(novo);
+			automato = renomeiaUniao(automato);
 
-            //Preencher as transições do novo autômatos com as transições de a
-            novo->estadoInicial = 0;
-            novo->estadosFinais = new int[1];
-            novo->estadosFinais[0] = novo->qtEstados-1;
-            novo->qtEstFinais = 1;
+			return automato;
+		}
 
+		Automato fechoDeKleene(Automato a) {
+			Automato automato;
 
-            //Só para testes, depois remover
-            cout << "-----------------------------------------------" << endl;
-            cout << " ALFABETO: " << novo->alfabeto << endl;
-            cout << " ESTADO INICIAL: " << novo->estadoInicial << endl;
-            cout << " CONJUNTO DE ESTADOS: ";
-            for(int x = 0; x < novo->qtEstados; x++){
-                cout << " " << novo->estados[x];
-            }
-            cout << endl << " ESTADO FINAIS: ";
-            for(int x = 0; x < novo->qtEstFinais; x++){
-                cout << " " << novo->estadosFinais[x];
-            }
-            cout << endl << " QUANTIDADE ESTADOS: " << novo->qtEstados << endl;
-            cout << " QUANTIDADE ESTADOS FINAIS: " << novo->qtEstFinais<< endl;
+			a = renomeiaFechoA(a);
 
-            // for(int x = 0; x < novo->qtEstados-1; x++){
-            //     for(int y = 0; y < novo->alfabeto.size(); y++){
-            //         cout << " ENTRANDO: '" << novo->alfabeto << "' NO ESTADO: '" << novo->estados[x] << "' VAI PARA O ESTADO: ";
-            //         cout << " '" << novo->transicoes[x][y].estados[x] << "'";
-            //     }
-            // }
-            cout << endl << "-----------------------------------------------" << endl << endl;
+			automato.setEstado("inicial");
+			automato.setTransicao("inicial", a.getEstadoInicial(), '&');
+			automato.setTransicao("inicial", "final", '&');
 
-            return novo;
-        };
+			automato.setAlfabeto(a.getAlfabeto());
+			automato.adicionaEstados(a.getEstados());
+			automato.adicionaTransicoes(a.getTransicoes());
 
-        void montadorAutomato(string posTho){
-           PILHAAUTOMATO *topo = NULL;
+			automato.setEstado("final");
+			automato.setTransicao(a.getEstadoFinal(), a.getEstadoInicial(), '&');
+			automato.setTransicao(a.getEstadoFinal(), "final", '&');
 
-            AUTOMATO *recebe1, *recebe2, *automato;
-            for(int x = 0; x < posTho.length(); x++){
-                simbolo = posTho[x];
+			automato.setEstadoInicial("inicial");
+			automato.setEstadoFinal("final");
 
-            	if(simbolo != "+" && simbolo != "." && simbolo != "*"){
-                    //Chamando a base para gerar a expressão regular que tá nos simbolo o automato
-                    empilhar(&topo, Base(simbolo));
-                    //listar(topo);
-                    cout << "Montou a Base" << endl << endl;
-                    //listar(topo);
-                }
-                //Para operador unário Fecho de Kleene
-                else if(simbolo == "*"){
-                    recebe1 = topo->automato;
-                    desempilhar(&topo);
-                    cout << "-----------------------------------" << endl;
-                    //listar(topo);
-                    empilhar(&topo, FechoDeKleene(recebe1));
-                    cout << "Entrou aqui Fecho de Kleene" << endl;
-                    //listar(topo);
-                }
-                else if(simbolo == "+" || simbolo == "."){
-                    recebe2 = topo->automato;
-                    //novo->estados = unirEstados(a->estados, b->estados);
-                    desempilhar(&topo);
-                    if(topo != NULL){
-                        recebe1 = topo->automato;
-                        desempilhar(&topo);
-                        if(simbolo == "+"){
-                            empilhar(&topo, Concatenacao(recebe1, recebe2));//Chamando concatenação, falta tratar ainda tá incompleta
-                            cout << "Entrou aqui Concatenação" << endl;
-                            //listar(topo);
-                        }
-                        else if(simbolo == "."){
-                            empilhar(&topo, Uniao(recebe1, recebe2));
-                            cout << "Entrou aqui União" << endl;
-                        }
-                    }
-                }
-                //listar(topo);
-            }
-        };
+			automato = renomeiaFecho(automato);
+
+			return automato;
+		}
+
+		char retiraAspas(string simbolo) {
+			char letra;
+
+			for (int i = 0; i < simbolo.size(); i++)
+				if (simbolo[i] != '\'')
+					letra = simbolo[i];
+
+			return letra;
+		}
+
+		vector<Transicao> uneTransicoes(vector<Transicao> transicoes1, vector<Transicao> transicoes2) {
+			vector<Transicao> transicoes;
+
+			for (int i = 0; i < transicoes1.size(); i++)
+				transicoes.push_back(transicoes1[i]);
+
+			for (int i = 0; i < transicoes2.size(); i++)
+				transicoes.push_back(transicoes2[i]);
+
+			return transicoes;
+		}
+
+		vector<string> uneEstados(vector<string> estados1, vector<string> estados2) {
+			vector<string> estados;
+
+			for (int i = 0; i < estados1.size(); i++)
+				estados.push_back(estados1[i]);
+
+			for (int i = 0; i < estados2.size(); i++)
+				estados.push_back(estados2[i]);
+
+			return estados;
+		}
+
+		string uneAlfabetos(string alfabeto1, string alfabeto2) {
+			string alfabeto;
+			alfabeto = alfabeto1;
+
+			for (int i = 0; i < alfabeto2.size(); i++) {
+				if (!contemLetra(alfabeto, alfabeto2[i]))
+					alfabeto.push_back(alfabeto2[i]);
+			}
+
+			return alfabeto;
+		}
+
+		bool contemLetra(string alfabeto, char simbolo) {
+			for (int i = 0; i < alfabeto.size(); i++) {
+				if (alfabeto[i] == simbolo)
+					return true;
+			}
+			return false;
+		}
+
+		Automato renomeiaConcatenacaoB(Automato automato, string estadoFinal) {
+			string final = "";
+			for (int i = 1; i < estadoFinal.size(); i++)
+				final.push_back(estadoFinal[i]);
+
+			int contador = stoi(final);
+			contador++;
+			string novo, anterior;
+
+			for (int i = 0; i < automato.getNumeroEstados(); i++, contador++) {
+				anterior = automato.getEstado(i);
+				novo = "q" + to_string(contador);
+				automato.alteraEstado(anterior, novo);
+			}
+
+			return automato;
+		}
+
+		Automato renomeiaUniaoA(Automato automato) {
+			string novo, anterior;
+
+			for (int i = 0; i < automato.getNumeroEstados(); i++) {
+				anterior = automato.getEstado(i);
+				novo = "a" + anterior;
+				automato.alteraEstado(anterior, novo);
+			}
+
+			return automato;
+		}
+
+		Automato renomeiaUniaoB(Automato automato) {
+			string novo, anterior;
+
+			for (int i = 0; i < automato.getNumeroEstados(); i++) {
+				anterior = automato.getEstado(i);
+				novo = "b" + anterior;
+				automato.alteraEstado(anterior, novo);
+			}
+
+			return automato;
+		}
+
+		Automato renomeiaUniao(Automato automato) {
+			string novo, anterior;
+
+			for (int i = 0, contador = 0; i < automato.getNumeroEstados(); i++, contador++) {
+				anterior = automato.getEstado(i);
+				novo = "q" + to_string(contador);
+				automato.alteraEstado(anterior, novo);
+			}
+
+			return automato;
+		}
+
+		Automato renomeiaFechoA(Automato automato) {
+			string novo, anterior;
+
+			for (int i = 0; i < automato.getNumeroEstados(); i++) {
+				anterior = automato.getEstado(i);
+				novo = "a" + anterior;
+				automato.alteraEstado(anterior, novo);
+			}
+
+			return automato;
+		}
+
+		Automato renomeiaFecho(Automato automato) {
+			string novo, anterior;
+
+			for (int i = 0, contador = 0; i < automato.getNumeroEstados(); i++, contador++) {
+				anterior = automato.getEstado(i);
+				novo = "q" + to_string(contador);
+				automato.alteraEstado(anterior, novo);
+			}
+
+			return automato;
+		}
 };
