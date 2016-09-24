@@ -4,7 +4,7 @@
 #include "Thompson.cpp"
 using namespace std;
 
-int main(){
+int main(int argc, char const *argv[]){
     int op;
     string expressao, posTho;
     Posfixa *pos = new Posfixa();
@@ -14,8 +14,8 @@ int main(){
         cout << "---------------------------------------------------" << endl;
         cout << "\t MENU DE OPÇÃO" << endl;
         cout << "---------------------------------------------------" << endl;
-        cout << " 1 -- INSERIR EXPRESSÃO " << endl;
-        cout << " 2 -- VISUALIZAR O AUTÔMATO DETERMINÍSTICO-& " << endl;
+        cout << " 1 -- INSERIR EXPRESSÃO (INFIXA)" << endl;
+        cout << " 2 -- VISUALIZAÇÃO DO AUTÔMATO DE THOMPSON " << endl;
         cout << " 0 -- SAIR" << endl;
         cout << "---------------------------------------------------" << endl;
         cout << " OPÇÃO: ";
@@ -37,10 +37,11 @@ int main(){
                 break;
             case 2:
                 cout << "---------------------------------------------------" << endl;
-                cout << "\t VISUALIZAÇÃO DO AUTÔMATO D. COM M. VAZIO" << endl;
+                cout << "\t VISUALIZAÇÃO DO AUTÔMATO DE THOMPSON" << endl;
                 cout << "---------------------------------------------------" << endl;
                 posTho = pos->retorno();
                 tho->montadorAutomato(posTho);
+
                 break;
             case 0:
                 cout << "\tAPLICAÇÃO ENCERRADA COM SUCESSO!" << endl << endl;
