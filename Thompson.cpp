@@ -94,40 +94,14 @@ class Thompson{
 		};
 
 		void mostrarAutomato(Automato automato){
-			cout << " TAMANHO DO AUTOMATO: " << automato.getNumeroEstados() << endl;
-			cout << " TAMANHO DO ALFABETO: " << automato.getTamanhoAlfabeto() << endl;
-			cout << " TAMANHO DA TRANSIÇÃO: " << automato.getNumeroTransicoes() << endl;
-			cout << " ALFABETO: ";
-			string alfa = automato.getAlfabeto();
-			for(int x = 0; x < automato.getTamanhoAlfabeto(); x++){
-                cout << " " << alfa[x];
-			}
-			cout << endl;
-			cout << " ESTADOS: ";
-
-			for(int x = 0; x < automato.getNumeroEstados(); x++){
-				if (automato.getEstado(x) == automato.getEstadoInicial()){
-					cout << " ->   " << automato.getEstado(x);
-				}
-				else if (automato.getEstado(x) == automato.getEstadoFinal()){
-					cout << " *   " << automato.getEstado(x);
-				}
-				else{
-                	cout << " " << automato.getEstado(x);
-                }
-			}
-			cout << endl;
-
-			cout << " TRANSIÇÕES: ";
-			//string trans = automato.setTransicoes();
-            //for(int x = 0; x < automato.getNumeroTransicoes(); x++){
-              //  cout << " " << automato.setTransicoes(x);
-            //}
-            cout << endl;
-
+			vector<Transicao> transicoes = automato.getTransicoes();
+			string origem, texto, simbolo, teste, armazena;
 			string aux;
 
-			aux = automato.getAlfabeto();
+
+			
+
+			/*aux = automato.getAlfabeto();
 			cout << endl << "---------------------------------------------" << endl;
 			cout << " ESTADOS" ;
 			for (int i = 0; i < aux.size(); i++){
@@ -136,46 +110,105 @@ class Thompson{
 			cout << endl << "---------------------------------------------" << endl;
 			for (int x = 0; x < automato.getNumeroEstados(); x++) {
 				if (automato.getEstado(x) == automato.getEstadoInicial()){
-					cout << "  ->" << automato.getEstado(x) << endl;
+					cout << "  ->" << automato.getEstado(x) << "   ";
 					cout << "---------------------------------------------" << endl;
 				}
 				else if (automato.getEstado(x) == automato.getEstadoFinal()){
-					cout << "   *" << automato.getEstado(x) << endl;
+					cout << "   *" << automato.getEstado(x);
 					cout << "---------------------------------------------" << endl;
 				}
 				else{
-                	cout << "    " << automato.getEstado(x) << endl;
+                	cout << "    " << automato.getEstado(x);
                 	cout << "---------------------------------------------" << endl;
                 }
+                teste.clear();
+
+				for (int k = 0; k < transicoes.size(); k++) {
+                    armazena = automato.getAlfabeto();
+					//simbolo = transicoes[k].getSimbolo();
+                    if(armazena[x] == transicoes[k].getSimbolo()){
+                      	//texto = armazena[k];
+						if (transicoes[k].getOrigem() == origem && simbolo == texto){
+							teste += transicoes[k].getDestino() + " ";
+							cout << " " << transicoes[k].getSimbolo();
+	                        //k = transicoes.size()+1;
+	                    }
+                    }
+                }
+                if (teste.empty())
+					cout << "{ }";
+				else
+                    cout << "  {" + teste + "}" << endl;
+			}
+			cout << endl << "---------------------------------------------" << endl;*/
+
+
+			aux = automato.getAlfabeto();
+			cout << endl << "---------------------------------------------" << endl;
+			cout << " ESTADOS" ;
+			for (int i = 0; i < aux.size(); i++){
+				cout << "   |   " << aux[i];
 			}
 			cout << endl << "---------------------------------------------" << endl;
+			for (int x = 0; x < automato.getNumeroTransicoes(); x++) {
+				origem = automato.getEstado(x);
+				if (automato.getEstado(x) == automato.getEstadoInicial()){
+					cout << "  ->" << origem << "    |";
+				}
+				else if (automato.getEstado(x) == automato.getEstadoFinal()){
+					cout << "   *" << origem << "    |";
+				}
+				else{
+                	cout << "    " << origem << "    |";
+                }
+				
+				for (int  j = 0; j < automato.getTamanhoAlfabeto(); j++) {
+					teste.clear();
+
+					for (int k = 0; k < transicoes.size(); k++) {
+                        armazena = automato.getAlfabeto();
+						//simbolo = transicoes[k].getSimbolo();
+                        if(armazena[j] == transicoes[k].getSimbolo()){
+                        	//texto = armazena[k];
+							if (transicoes[k].getOrigem() == origem && simbolo == texto){
+								teste += transicoes[k].getDestino() + " ";
+								//cout << " " << transicoes[k].getSimbolo();
+	                            //k = transicoes.size()+1;
+	                        }
+                        }
+                        /*texto = armazena[k];
+						simbolo = transicoes[k].getSimbolo();
+						cout << "--------------------------------" << endl;
+						cout << "  TEXTO: " << armazena[k];
+						cout << "  SIMBOLO: " << simbolo << endl;
+						cout << "--------------------------------" << endl;
+						if (transicoes[k].getOrigem() == origem && simbolo == texto){
+							teste += transicoes[k].getDestino() + " ";
+							cout << " ENTRA < " << simbolo << " > ";
+                            //k = transicoes.size()+1;
+                        }*/
+
+					}
+					//cout << "SIMBOLO: " << simbolo << endl << endl;
+
+					if (teste.empty()){
+						cout << "  { }  | ";
+					}
+
+					else{
+                        cout << "  {" + teste + "}" << endl;
+					}
+                    
+                    //teste.clear();
+				}
+				cout << "---------------------------------------------" << endl;
+
+			}
+			cout << endl;
+		};
 
 
-			// vector<Transicao> transicoes = automato.getTransicoes();
-			// string origem, texto, simbolo;
 
-			// for (int i = 0; i < automato.getNumeroTransicoes(); i++) {
-			// 	origem = automato.getEstado(i);
-			// 	for (int  j = 0; j < automato.getTamanhoAlfabeto(); j++) {
-			// 		aux.clear();
-			// 		for (int k = 0; k < transicoes.size(); k++) {
-			// 			simbolo = transicoes[k].getSimbolo();
-			// 			if (transicoes[k].getOrigem() == origem && simbolo == texto)
-			// 				aux += transicoes[k].getDestino() + " ";
-			// 		}
-
-			// 		//if (aux.empty())
-			// 			//ui->twAutomato->setItem(i, j, new QTableWidgetItem(QString::fromStdString("")));
-			// 		//else
-			// 			//ui->twAutomato->setItem(i, j, new QTableWidgetItem(QString::fromStdString("{" + aux + "}")));
-			// 	}
-			// 	//ui->twAutomato->verticalHeaderItem(i)->setTextAlignment(Qt::AlignRight);
-			// }
-
-
-
-
-		}
 
 		bool temVazio(string posTho) {
 			for (int i = 0; i < posTho.size(); i++)
