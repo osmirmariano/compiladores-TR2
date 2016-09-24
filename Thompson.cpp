@@ -171,7 +171,7 @@ class Thompson{
                         if(armazena[j] == transicoes[k].getSimbolo()){
                         	//texto = armazena[k];
 							if (transicoes[k].getOrigem() == origem && simbolo == texto){
-								teste += transicoes[k].getDestino() + " ";
+								teste += transicoes[k].getDestino();
 								//cout << " " << transicoes[k].getSimbolo();
 	                            //k = transicoes.size()+1;
 	                        }
@@ -196,12 +196,12 @@ class Thompson{
 					}
 
 					else{
-                        cout << "  {" + teste + "}" << endl;
+                        cout << "  {" + teste + "} |";
 					}
                     
                     //teste.clear();
 				}
-				cout << "---------------------------------------------" << endl;
+				cout << endl;
 
 			}
 			cout << endl;
