@@ -4,9 +4,11 @@
 #include <stack>
 #include <sstream>
 #include <cstdlib>
+#include <cctype>
 
 #include "Automato.cpp"
 #include "Transicao.cpp"
+
 
 using namespace std;
 
@@ -55,8 +57,9 @@ class Thompson{
 			for (int i = 0; i < posTho.size(); i++) {
 				simbolo = posTho[i];
 
-				if (operando(simbolo))
+				if (operando(simbolo)){
 					pilha.push(base(retiraAspas(simbolo)));
+				}
 				else if (operadorUnario(simbolo)) {
 					op1 = pilha.top();
 					pilha.pop();
@@ -67,8 +70,9 @@ class Thompson{
 					if (!pilha.empty()) {
 						op1 = pilha.top();
 						pilha.pop();
-						if (operadorConcatenacao(simbolo))
+						if (operadorConcatenacao(simbolo)){
 							pilha.push(concatenacao(op1, op2));
+						}
 						else if (operadorUniao(simbolo))
 							pilha.push(uniao(op1, op2));
 					}
@@ -83,8 +87,94 @@ class Thompson{
 			else
 				automato.setAlfabeto(automato.getAlfabeto() + "&");
 
-			if (pilha.empty())
+			if (pilha.empty()){
+				mostrarAutomato(automato);
 				return automato;
+			}
+		};
+
+		void mostrarAutomato(Automato automato){
+			cout << " TAMANHO DO AUTOMATO: " << automato.getNumeroEstados() << endl;
+			cout << " TAMANHO DO ALFABETO: " << automato.getTamanhoAlfabeto() << endl;
+			cout << " TAMANHO DA TRANSIÇÃO: " << automato.getNumeroTransicoes() << endl;
+			cout << " ALFABETO: ";
+			string alfa = automato.getAlfabeto();
+			for(int x = 0; x < automato.getTamanhoAlfabeto(); x++){
+                cout << " " << alfa[x];
+			}
+			cout << endl;
+			cout << " ESTADOS: ";
+
+			for(int x = 0; x < automato.getNumeroEstados(); x++){
+				if (automato.getEstado(x) == automato.getEstadoInicial()){
+					cout << " ->   " << automato.getEstado(x);
+				}
+				else if (automato.getEstado(x) == automato.getEstadoFinal()){
+					cout << " *   " << automato.getEstado(x);
+				}
+				else{
+                	cout << " " << automato.getEstado(x);
+                }
+			}
+			cout << endl;
+
+			cout << " TRANSIÇÕES: ";
+			//string trans = automato.setTransicoes();
+            //for(int x = 0; x < automato.getNumeroTransicoes(); x++){
+              //  cout << " " << automato.setTransicoes(x);
+            //}
+            cout << endl;
+
+			string aux;
+
+			aux = automato.getAlfabeto();
+			cout << endl << "---------------------------------------------" << endl;
+			cout << " ESTADOS" ;
+			for (int i = 0; i < aux.size(); i++){
+				cout << "   |   " << aux[i];
+			}
+			cout << endl << "---------------------------------------------" << endl;
+			for (int x = 0; x < automato.getNumeroEstados(); x++) {
+				if (automato.getEstado(x) == automato.getEstadoInicial()){
+					cout << "  ->" << automato.getEstado(x) << endl;
+					cout << "---------------------------------------------" << endl;
+				}
+				else if (automato.getEstado(x) == automato.getEstadoFinal()){
+					cout << "   *" << automato.getEstado(x) << endl;
+					cout << "---------------------------------------------" << endl;
+				}
+				else{
+                	cout << "    " << automato.getEstado(x) << endl;
+                	cout << "---------------------------------------------" << endl;
+                }
+			}
+			cout << endl << "---------------------------------------------" << endl;
+
+
+			// vector<Transicao> transicoes = automato.getTransicoes();
+			// string origem, texto, simbolo;
+
+			// for (int i = 0; i < automato.getNumeroTransicoes(); i++) {
+			// 	origem = automato.getEstado(i);
+			// 	for (int  j = 0; j < automato.getTamanhoAlfabeto(); j++) {
+			// 		aux.clear();
+			// 		for (int k = 0; k < transicoes.size(); k++) {
+			// 			simbolo = transicoes[k].getSimbolo();
+			// 			if (transicoes[k].getOrigem() == origem && simbolo == texto)
+			// 				aux += transicoes[k].getDestino() + " ";
+			// 		}
+
+			// 		//if (aux.empty())
+			// 			//ui->twAutomato->setItem(i, j, new QTableWidgetItem(QString::fromStdString("")));
+			// 		//else
+			// 			//ui->twAutomato->setItem(i, j, new QTableWidgetItem(QString::fromStdString("{" + aux + "}")));
+			// 	}
+			// 	//ui->twAutomato->verticalHeaderItem(i)->setTextAlignment(Qt::AlignRight);
+			// }
+
+
+
+
 		}
 
 		bool temVazio(string posTho) {
@@ -276,16 +366,13 @@ class Thompson{
 			return false;
 		}
 
-		Automato renomeiaConcatenacaoB(Automato automato, string estadoFinal) {
-			int contador;
 
+		Automato renomeiaConcatenacaoB(Automato automato, string estadoFinal) {
 			string final = "";
 			for (int i = 1; i < estadoFinal.size(); i++)
 				final.push_back(estadoFinal[i]);
-			//Convertendo para inteiro
-			stringstream convert(final);
-			if ( !(convert >> contador) )
-			    contador = 0;
+
+			int contador = stoi(final);
 			contador++;
 			string novo, anterior;
 
@@ -296,7 +383,7 @@ class Thompson{
 			}
 
 			return automato;
-		}
+		};
 
 		Automato renomeiaUniaoA(Automato automato) {
 			string novo, anterior;
