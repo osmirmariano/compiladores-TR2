@@ -322,7 +322,7 @@ class Thompson{
 		/*---------------------------------FUNÇÃO PARA RENOMEAR CONCATENAÇÃO-----------------------*/
 		Automato renomeiaConcatenacaoB(Automato automato, string estadoFinal) {
 			string final = "";
-			int comtador;
+			int contador;
 			for (int i = 1; i < estadoFinal.size(); i++){
 				final.push_back(estadoFinal[i]);
 			}
