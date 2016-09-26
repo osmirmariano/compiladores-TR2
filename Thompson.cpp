@@ -52,24 +52,32 @@ class Thompson{
 			stack<Automato> pilha;
 			Automato automato, op1, op2;
 			string simbolo;
+			//Percorrendo cada simbolo da posfixa
 			for (int i = 0; i < posTho.size(); i++) {
 				simbolo = posTho[i];
+				//Se for um operando empilha a base
 				if (operando(simbolo)){
 					pilha.push(base(retiraAspas(simbolo)));
 				}
+				//Se for um operador Unário Fecho de Kleene
 				else if (operadorUnario(simbolo)) {
 					op1 = pilha.top();
 					pilha.pop();
 					pilha.push(fechoDeKleene(op1));
-				} else if (operadorBinario(simbolo)) {
+				} 
+				//Condição para operador binário
+				else if (operadorBinario(simbolo)) {
 					op2 = pilha.top();
 					pilha.pop();
+					//Verifica se a pilha ta vazia
 					if (!pilha.empty()) {
 						op1 = pilha.top();
 						pilha.pop();
+						//sendo um operador de concatenção
 						if (operadorConcatenacao(simbolo)){
 							pilha.push(concatenacao(op1, op2));
 						}
+						//sendo um operador de união
 						else if (operadorUniao(simbolo))
 							pilha.push(uniao(op1, op2));
 					}
@@ -97,22 +105,22 @@ class Thompson{
 			string aux;
 
 			aux = automato.getAlfabeto();
-			cout << endl << "---------------------------------------------" << endl;
+			cout << endl << "----------------------------------------------------------------------" << endl;
 			cout << " ESTADOS" ;
-			for (int i = 0; i < aux.size(); i++){
-				cout << "   |   " << aux[i];
+			for (int x = 0; x < aux.size(); x++){
+				cout << "    |    " << aux[x];
 			}
-			cout << endl << "---------------------------------------------" << endl;
+			cout << endl << "----------------------------------------------------------------------" << endl;
 			for (int x = 0; x < automato.getNumeroEstados(); x++) {
 				origem = automato.getEstado(x);
 				if (automato.getEstado(x) == automato.getEstadoInicial()){
-					cout << "  ->" << origem << "     |";
+					cout << "  ->" << origem << "      |";
 				}
 				else if (automato.getEstado(x) == automato.getEstadoFinal()){
-					cout << "   *" << origem << "     |";
+					cout << "   *" << origem << "      |";
 				}
 				else{
-                	cout << "    " << origem << "     |";
+                	cout << "    " << origem << "      |";
                 }
 
 				for (int  j = 0; j < automato.getTamanhoAlfabeto(); j++) {
@@ -127,14 +135,14 @@ class Thompson{
 
 					}
 					if (teste.empty()){
-						cout << "       | ";
+						cout << "         | ";
 					}
 
 					else{
-                        cout << "  {" + teste + "} |";
+                        cout << "   {" + teste + "}  |";
 					}
 				}
-				cout << endl << "---------------------------------------------" << endl;
+				cout << endl << "----------------------------------------------------------------------" << endl;
 			}
 		};
 
@@ -349,7 +357,7 @@ class Thompson{
 			}
 
 			return automato;
-		}
+		};
 
 		Automato renomeiaUniaoB(Automato automato) {
 			string novo, anterior;
@@ -361,7 +369,7 @@ class Thompson{
 			}
 
 			return automato;
-		}
+		};
 
 		Automato renomeiaUniao(Automato automato) {
 			string novo, anterior;
@@ -373,7 +381,7 @@ class Thompson{
 			}
 
 			return automato;
-		}
+		};
 
 
 		/*---------------------------------FUNÇÃO PARA RENOMEAR FECHO DE KLEENE-----------------------*/
@@ -387,7 +395,7 @@ class Thompson{
 			}
 
 			return automato;
-		}
+		};
 
 		Automato renomeiaFecho(Automato automato) {
 			string novo, anterior;
@@ -399,5 +407,5 @@ class Thompson{
 			}
 
 			return automato;
-		}
+		};
 };

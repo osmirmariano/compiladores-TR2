@@ -14,6 +14,7 @@ class Transicao{
 		char simbolo;
 
 	public:
+		//CONSTRUTOR
 		Transicao(){
 			void setOrigem(string);
 			void setDestino(string);
@@ -23,28 +24,35 @@ class Transicao{
 			char getSimbolo();
 		};
 
+		/*-----------------------------FUNÇÃO SETORIGEM--------------------------------*/
 		void setOrigem(string origem) {
 			this->origem = origem;
-		}
+		};
 
+		/*-----------------------------FUNÇÃO SETDESTINO--------------------------------*/
 		void setDestino(string destino) {
 			this->destino = destino;
-		}
+		};
 
+		/*-----------------------------FUNÇÃO SETSIMBOLO--------------------------------*/
 		void setSimbolo(char simbolo) {
 			this->simbolo = simbolo;
-		}
+		};
 
+		/*-----------------------------FUNÇÃO GETORIGEM---------------------------------*/
 		string getOrigem() {
 			return origem;
-		}
+		};
 
+		/*-----------------------------FUNÇÃO GETDESTINO--------------------------------*/
 		string getDestino() {
 			return destino;
-		}
+		};
 
+		/*-----------------------------FUNÇÃO GETSIMBOLO--------------------------------*/
 		char getSimbolo() {
 			return simbolo;
-		}
+		};
 };
+
 #endif // TRANSICAO_H
