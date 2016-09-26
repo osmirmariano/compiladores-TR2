@@ -26,19 +26,15 @@ class Thompson{
 			bool operadorBinario(string);
 			bool operadorConcatenacao(string);
 			bool operadorUniao(string);
-
 			Automato base(char);
 			Automato concatenacao(Automato, Automato);
 			Automato uniao(Automato, Automato);
 			Automato fechoDeKleene(Automato);
-
 			char retiraAspas(string);
-
 			vector<Transicao> uneTransicoes(vector<Transicao>, vector<Transicao>);
 			vector<string> uneEstados(vector<string>, vector<string>);
 			string uneAlfabetos(string, string);
 			bool contemLetra(string, char);
-
 			Automato renomeiaConcatenacaoB(Automato, string);
 			Automato renomeiaUniaoA(Automato);
 			Automato renomeiaUniaoB(Automato);
@@ -55,7 +51,7 @@ class Thompson{
 			if(posTho.length() == 0){
 				cout << "---------------------------------------------------" << endl;
 				cout << " É NECESSÁRIO INSERIR PRIMEIRO UMA EXPRESSÃO" << endl;
-				cout << " \tESCOLHA A OPÇÃO 1" << endl;
+				cout << " \tPOR FAVOR, ESCOLHA A OPÇÃO 1" << endl;
 				cout << "---------------------------------------------------" << endl;
 			}
 			else{
