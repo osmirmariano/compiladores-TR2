@@ -288,7 +288,7 @@ class Posfixa{
                 topo = NULL;
             }
             else{
-                cout << endl << "\t ERRO! FALTANDO PARENTESES" << endl;
+                cout << endl << "\t ERRO! FALTANDO PARENTESES" << endl << endl;
             }
             
         };

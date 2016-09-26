@@ -52,50 +52,59 @@ class Thompson{
 			stack<Automato> pilha;
 			Automato automato, op1, op2;
 			string simbolo;
-			//Percorrendo cada simbolo da posfixa
-			for (int i = 0; i < posTho.size(); i++) {
-				simbolo = posTho[i];
-				//Se for um operando empilha a base
-				if (operando(simbolo)){
-					pilha.push(base(retiraAspas(simbolo)));
-				}
-				//Se for um operador Unário Fecho de Kleene
-				else if (operadorUnario(simbolo)) {
-					op1 = pilha.top();
-					pilha.pop();
-					pilha.push(fechoDeKleene(op1));
-				} 
-				//Condição para operador binário
-				else if (operadorBinario(simbolo)) {
-					op2 = pilha.top();
-					pilha.pop();
-					//Verifica se a pilha ta vazia
-					if (!pilha.empty()) {
+			if(posTho.length() == 0){
+				cout << "---------------------------------------------------" << endl;
+				cout << " É NECESSÁRIO INSERIR PRIMEIRO UMA EXPRESSÃO" << endl;
+				cout << " \tESCOLHA A OPÇÃO 1" << endl;
+				cout << "---------------------------------------------------" << endl;
+			}
+			else{
+				//Percorrendo cada simbolo da posfixa
+				for (int i = 0; i < posTho.size(); i++) {
+					simbolo = posTho[i];
+					//Se for um operando empilha a base
+					if (operando(simbolo)){
+						pilha.push(base(retiraAspas(simbolo)));
+					}
+					//Se for um operador Unário Fecho de Kleene
+					else if (operadorUnario(simbolo)) {
 						op1 = pilha.top();
 						pilha.pop();
-						//sendo um operador de concatenção
-						if (operadorConcatenacao(simbolo)){
-							pilha.push(concatenacao(op1, op2));
+						pilha.push(fechoDeKleene(op1));
+					} 
+					//Condição para operador binário
+					else if (operadorBinario(simbolo)) {
+						op2 = pilha.top();
+						pilha.pop();
+						//Verifica se a pilha ta vazia
+						if (!pilha.empty()) {
+							op1 = pilha.top();
+							pilha.pop();
+							//sendo um operador de concatenção
+							if (operadorConcatenacao(simbolo)){
+								pilha.push(concatenacao(op1, op2));
+							}
+							//sendo um operador de união
+							else if (operadorUniao(simbolo))
+								pilha.push(uniao(op1, op2));
 						}
-						//sendo um operador de união
-						else if (operadorUniao(simbolo))
-							pilha.push(uniao(op1, op2));
 					}
+				}
+
+				automato = pilha.top();
+				pilha.pop();
+
+				if (temVazio(posTho))
+					automato.setAlfabeto(moveVazio(automato.getAlfabeto()));
+				else
+					automato.setAlfabeto(automato.getAlfabeto() + "&");
+
+				if (pilha.empty()){
+					mostrarAutomato(automato);
+					return automato;
 				}
 			}
 
-			automato = pilha.top();
-			pilha.pop();
-
-			if (temVazio(posTho))
-				automato.setAlfabeto(moveVazio(automato.getAlfabeto()));
-			else
-				automato.setAlfabeto(automato.getAlfabeto() + "&");
-
-			if (pilha.empty()){
-				mostrarAutomato(automato);
-				return automato;
-			}
 		};
 
 		/*------------------------FUNÇÃO PARA MOSTRAR A. F. M. &----------------------------*/
@@ -103,7 +112,6 @@ class Thompson{
 			vector<Transicao> transicoes = automato.getTransicoes();
 			string origem, texto, simbolo, teste, armazena;
 			string aux;
-
 			aux = automato.getAlfabeto();
 			cout << endl << "----------------------------------------------------------------------" << endl;
 			cout << " ESTADOS" ;
@@ -144,6 +152,7 @@ class Thompson{
 				}
 				cout << endl << "----------------------------------------------------------------------" << endl;
 			}
+			cout << endl;
 		};
 
 		/*------------------------FUNÇÃO PARA VERIFICAR PALAVRA VAZIA------------------------*/
@@ -239,17 +248,17 @@ class Thompson{
 			Automato automato;
 			a = renomeiaUniaoA(a);
 			b = renomeiaUniaoB(b);
-			automato.setEstado("inicial");
-			automato.setTransicao("inicial", a.getEstadoInicial(), '&');
-			automato.setTransicao("inicial", b.getEstadoInicial(), '&');
+			automato.setEstado("inicio");
+			automato.setTransicao("inicio", a.getEstadoInicial(), '&');
+			automato.setTransicao("inicio", b.getEstadoInicial(), '&');
 			automato.adicionaEstados(uneEstados(a.getEstados(), b.getEstados()));
 			automato.adicionaTransicoes(uneTransicoes(a.getTransicoes(), b.getTransicoes()));
-			automato.setEstado("final");
-			automato.setTransicao(a.getEstadoFinal(), "final", '&');
-			automato.setTransicao(b.getEstadoFinal(), "final", '&');
+			automato.setEstado("fim");
+			automato.setTransicao(a.getEstadoFinal(), "fim", '&');
+			automato.setTransicao(b.getEstadoFinal(), "fim", '&');
 			automato.setAlfabeto(uneAlfabetos(a.getAlfabeto(), b.getAlfabeto()));
-			automato.setEstadoInicial("inicial");
-			automato.setEstadoFinal("final");
+			automato.setEstadoInicial("inicio");
+			automato.setEstadoFinal("fim");
 			automato = renomeiaUniao(automato);
 			return automato;
 		};
@@ -259,17 +268,17 @@ class Thompson{
 		Automato fechoDeKleene(Automato a) {
 			Automato automato;
 			a = renomeiaFechoA(a);
-			automato.setEstado("inicial");
-			automato.setTransicao("inicial", a.getEstadoInicial(), '&');
-			automato.setTransicao("inicial", "final", '&');
+			automato.setEstado("inicio");
+			automato.setTransicao("inicio", a.getEstadoInicial(), '&');
+			automato.setTransicao("inicio", "fim", '&');
 			automato.setAlfabeto(a.getAlfabeto());
 			automato.adicionaEstados(a.getEstados());
 			automato.adicionaTransicoes(a.getTransicoes());
-			automato.setEstado("final");
+			automato.setEstado("fim");
 			automato.setTransicao(a.getEstadoFinal(), a.getEstadoInicial(), '&');
-			automato.setTransicao(a.getEstadoFinal(), "final", '&');
-			automato.setEstadoInicial("inicial");
-			automato.setEstadoFinal("final");
+			automato.setTransicao(a.getEstadoFinal(), "fim", '&');
+			automato.setEstadoInicial("inicio");
+			automato.setEstadoFinal("fim");
 			automato = renomeiaFecho(automato);
 			return automato;
 		};
