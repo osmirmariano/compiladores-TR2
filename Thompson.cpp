@@ -8,7 +8,6 @@
 #include "Automato.cpp"
 #include "Transicao.cpp"
 
-
 using namespace std;
 
 class Thompson{

@@ -6,7 +6,6 @@
 #include <vector>
 #include "Transicao.cpp"
 
-
 using namespace std;
 
 class Automato {
