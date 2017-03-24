@@ -17,7 +17,7 @@ class Automato {
 		string estadoFinal;
 
 	public:
-		//CONSTRUTOR
+		//CONSTRUTOR.
 		Automato(){
 			void setAlfabeto(string);
 			void setAlfabeto(char);
